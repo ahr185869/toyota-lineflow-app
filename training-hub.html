@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Toyota Unified Training Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0f1c; --card:#111827; --muted:#8b9dc3; --accent:#00d4ff;
+  --glass:rgba(0,212,255,0.05); --danger:#ff2e63; --ok:#00ff88;
+  --warn:#ffcc00; --info:#0099ff; --accent-hover:#00b8e6;
+  --shadow:0 8px 30px rgba(0,212,255,0.15); --radius:14px;
+  --bg2:#0f1118; --bg3:#151a25; --bdr:#252e42; --acc2:#ff6030;
+  --grn:#00e676; --red:#ff3333; --txt:#dde2ee; --txt2:#7a87a8; --txt3:#3e4a62;
+  --fh:'Rajdhani',sans-serif; --fm:'Share Tech Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Segoe UI,Arial,sans-serif;}
+body{background:linear-gradient(180deg,#0a0f1c 0%,#111827 100%);color:#e6f1ff;min-height:100vh;font-size:13px;}
+
+/* ── HEADER ── */
+.combined-header{
+  display:flex;align-items:center;gap:10px;padding:8px 16px;
+  background:linear-gradient(90deg,rgba(0,212,255,0.12),transparent);
+  border-bottom:1px solid rgba(0,212,255,0.12);position:sticky;top:0;z-index:200;
+}
+.brand{display:flex;align-items:center;gap:10px;}
+.logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#9d4edd);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
+.logo svg{width:22px;height:22px;}
+.brand-title{font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.brand-sub{font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;border-left:1px solid rgba(0,212,255,0.25);padding-left:10px;}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.sys-time{display:flex;align-items:center;gap:6px;padding:5px 12px;cursor:default;white-space:nowrap;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:999px;font-size:11px;color:#e6f1ff;}
+.tv{font-size:12px;color:var(--accent);font-weight:700;}
+.tl{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:1px;}
+.tsep{color:var(--accent);font-size:10px;opacity:0.5;}
+.usr-dot{width:30px;height:30px;border-radius:50%;background:rgba(0,212,255,0.14);border:1px solid rgba(0,212,255,0.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent);}
+
+/* ── LANGUAGE SWITCHER ── */
+.lang-switcher{display:flex;align-items:center;gap:5px;padding:4px 8px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:999px;}
+.lang-btn{padding:3px 8px;border-radius:999px;font-size:10px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.15s;font-family:inherit;letter-spacing:0.5px;}
+.lang-btn:hover{color:#e6f1ff;background:rgba(0,212,255,0.1);}
+.lang-btn.active{background:var(--accent);color:#0a0f1c;}
+
+/* ── NAV ── */
+.nav-controls{display:flex;gap:6px;padding:7px 16px;flex-wrap:wrap;background:rgba(0,212,255,0.04);border-bottom:1px solid rgba(0,212,255,0.1);align-items:center;}
+.nav-btn{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;font-size:11px;font-weight:500;color:#e6f1ff;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);border-radius:999px;cursor:pointer;transition:all 0.2s;font-family:inherit;white-space:nowrap;}
+.nav-btn:hover{background:rgba(0,212,255,0.15);transform:translateY(-1px);}
+.nav-btn.active{background:rgba(0,212,255,0.22);border-color:var(--accent);font-weight:600;box-shadow:0 0 0 1px rgba(0,212,255,0.35),0 0 12px rgba(0,212,255,0.3);}
+.pill-dot{width:8px;height:8px;border-radius:50%;box-shadow:0 0 5px currentColor;flex-shrink:0;}
+
+/* ── LAYOUT ── */
+.main-layout{display:flex;min-height:calc(100vh - 88px);}
+.sidebar{width:200px;flex-shrink:0;background:var(--card);border-right:1px solid rgba(0,212,255,0.1);padding:10px 0;overflow-y:auto;position:sticky;top:88px;height:calc(100vh - 88px);}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.2);}
+.sb-sec{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:8px 14px 4px;font-weight:600;margin-top:6px;}
+.sb-item{display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;color:#b0c4de;font-size:12px;border-left:2px solid transparent;transition:all 0.15s;}
+.sb-item:hover{background:rgba(0,212,255,0.06);color:#e6f1ff;}
+.sb-item.active{background:rgba(0,212,255,0.12);color:var(--accent);border-left-color:var(--accent);}
+.sb-badge{margin-left:auto;background:rgba(0,212,255,0.15);color:var(--accent);font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;}
+.sb-badge.red{background:rgba(255,46,99,0.15);color:var(--danger);}
+.sb-badge.green{background:rgba(0,255,136,0.12);color:var(--ok);}
+
+/* ── CONTENT ── */
+.content{flex:1;padding:14px;overflow-y:auto;}
+.sec-page{display:none;}
+.sec-page.active{display:block;animation:fadeIn 0.25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── PAGE HEADER ── */
+.pg-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(0,212,255,0.12);}
+.pg-tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:3px;}
+.pg-hdr h1{font-size:18px;font-weight:700;letter-spacing:0.5px;}
+
+/* ── EDIT HEADLINE BUTTON ── */
+.editable-title{display:inline-flex;align-items:center;gap:8px;}
+.edit-btn{background:none;border:1px solid rgba(0,212,255,0.2);color:var(--muted);border-radius:4px;padding:2px 7px;font-size:10px;cursor:pointer;transition:all 0.15s;}
+.edit-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,0.07);}
+.inline-edit-input{background:rgba(0,212,255,0.08);border:1px solid var(--accent);color:#e6f1ff;border-radius:4px;padding:3px 8px;font-size:16px;font-weight:700;font-family:inherit;outline:none;width:300px;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;font-family:inherit;}
+.btn-accent{background:var(--accent);color:#0a0f1c;}
+.btn-accent:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,212,255,0.35);}
+.btn-ghost{background:transparent;border:1px solid rgba(0,212,255,0.2);color:var(--muted);}
+.btn-ghost:hover{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.4);color:#e6f1ff;}
+.btn-danger{background:rgba(255,46,99,0.14);color:var(--danger);border:1px solid rgba(255,46,99,0.25);}
+.btn-danger:hover{background:rgba(255,46,99,0.24);}
+.btn-ok{background:rgba(0,255,136,0.12);color:var(--ok);border:1px solid rgba(0,255,136,0.2);}
+.btn-ok:hover{background:rgba(0,255,136,0.22);}
+.btn-warn{background:rgba(255,204,0,0.12);color:var(--warn);border:1px solid rgba(255,204,0,0.2);}
+.btn-warn:hover{background:rgba(255,204,0,0.22);}
+.btn-info{background:rgba(0,153,255,0.12);color:var(--info);border:1px solid rgba(0,153,255,0.2);}
+.btn-info:hover{background:rgba(0,153,255,0.22);}
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.stat-card{background:var(--card);border-radius:var(--radius);padding:12px 14px;border:1px solid rgba(0,212,255,0.1);transition:all 0.2s;}
+.stat-card:hover{border-color:rgba(0,212,255,0.3);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,212,255,0.1);}
+.st-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px;}
+.st-val{font-size:28px;font-weight:700;color:var(--accent);line-height:1;}
+.st-sub{font-size:10px;color:var(--muted);margin-top:3px;}
+.stat-card.red .st-val{color:var(--danger);}
+.stat-card.ok .st-val{color:var(--ok);}
+.stat-card.warn .st-val{color:var(--warn);}
+
+/* ── SEARCH ── */
+.search-bar{display:flex;gap:8px;margin-bottom:12px;}
+.srch{flex:1;padding:7px 12px;border:1px solid rgba(0,212,255,0.2);border-radius:4px;font-size:12px;background:rgba(0,212,255,0.05);color:#e6f1ff;outline:none;transition:all 0.2s;font-family:inherit;}
+.srch::placeholder{color:var(--muted);}
+.srch:focus{border-color:var(--accent);background:rgba(0,212,255,0.09);}
+.fsel{padding:7px 10px;border:1px solid rgba(0,212,255,0.2);border-radius:4px;font-size:11px;background:rgba(0,212,255,0.05);color:#e6f1ff;font-family:inherit;outline:none;}
+.fsel option{background:#1a2235;color:#e6f1ff;}
+
+/* ── PLAYLIST ── */
+.pl-wrap{display:grid;grid-template-columns:1fr 290px;gap:10px;margin-bottom:14px;}
+.player-main{background:var(--card);border-radius:10px;border:1px solid rgba(0,212,255,0.15);overflow:hidden;}
+.player-screen{width:100%;aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;}
+.player-screen video{width:100%;height:100%;object-fit:contain;display:none;}
+.player-idle{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;height:100%;color:var(--muted);}
+.idle-icon{width:52px;height:52px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.player-controls{padding:10px 12px;background:rgba(0,212,255,0.03);border-top:1px solid rgba(0,212,255,0.1);display:flex;flex-direction:column;gap:8px;}
+.pl-title{font-size:13px;font-weight:600;color:#e6f1ff;}
+.pl-meta{font-size:10px;color:var(--muted);}
+.pl-btns{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.play-all-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--accent);color:#0a0f1c;border:none;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:inherit;}
+.play-all-btn:hover{background:var(--accent-hover);box-shadow:0 0 14px rgba(0,212,255,0.45);}
+.play-all-btn.playing{background:var(--warn);color:#0a0f1c;}
+.ctrl-btn{width:28px;height:28px;border-radius:50%;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.ctrl-btn:hover{background:rgba(0,212,255,0.2);transform:scale(1.1);}
+.ctrl-btn:disabled{opacity:0.3;cursor:not-allowed;transform:none;}
+.prog-wrap{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--muted);}
+.prog-track{flex:1;height:4px;background:rgba(0,212,255,0.1);border-radius:2px;cursor:pointer;overflow:hidden;}
+.prog-fill{height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width 0.3s;}
+.pl-sidebar{background:var(--card);border-radius:10px;border:1px solid rgba(0,212,255,0.12);overflow:hidden;display:flex;flex-direction:column;max-height:400px;}
+.pl-hdr{padding:8px 12px;background:rgba(0,212,255,0.08);border-bottom:1px solid rgba(0,212,255,0.1);font-size:11px;font-weight:600;color:var(--accent);display:flex;align-items:center;gap:6px;}
+.pl-list{overflow-y:auto;flex:1;}
+.pl-list::-webkit-scrollbar{width:3px;}
+.pl-list::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.2);}
+.pl-item{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;border-bottom:1px solid rgba(0,212,255,0.06);transition:all 0.15s;position:relative;}
+.pl-item:hover{background:rgba(0,212,255,0.07);}
+.pl-item.playing{background:rgba(0,212,255,0.12);border-left:2px solid var(--accent);}
+.pl-num{width:20px;height:20px;border-radius:50%;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--muted);flex-shrink:0;}
+.pl-item.playing .pl-num{background:var(--accent);color:#0a0f1c;animation:plPulse 1.4s ease-in-out infinite;}
+@keyframes plPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,0.4);}50%{box-shadow:0 0 0 5px rgba(0,212,255,0);}}
+.pl-info{flex:1;min-width:0;}
+.pl-t{font-size:11px;font-weight:500;color:#e6f1ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pl-m{font-size:9px;color:var(--muted);}
+.pl-d{font-size:9px;color:var(--muted);flex-shrink:0;}
+.mandatory-dot{position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:var(--danger);box-shadow:0 0 4px var(--danger);}
+
+/* ── VIDEO GRID ── */
+.video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:10px;margin-bottom:14px;}
+.vcard{background:var(--card);border-radius:10px;overflow:hidden;border:1px solid rgba(0,212,255,0.1);transition:all 0.2s;cursor:pointer;}
+.vcard:hover{border-color:rgba(0,212,255,0.3);transform:translateY(-2px);box-shadow:0 4px 18px rgba(0,212,255,0.1);}
+.vcard.ql{border-color:var(--accent);box-shadow:0 0 0 1px rgba(0,212,255,0.25);}
+.vthumb{width:100%;aspect-ratio:16/9;background:#06101e;position:relative;display:flex;align-items:center;justify-content:center;}
+.vplay{width:40px;height:40px;background:rgba(0,212,255,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(0,212,255,0.5);transition:all 0.2s;}
+.vcard:hover .vplay{transform:scale(1.12);box-shadow:0 0 22px rgba(0,212,255,0.7);}
+.vdur{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.75);color:#e6f1ff;font-size:9px;font-weight:600;padding:1px 5px;border-radius:2px;}
+.vcat{position:absolute;top:6px;left:6px;font-size:8px;font-weight:700;padding:2px 6px;border-radius:2px;text-transform:uppercase;letter-spacing:0.3px;}
+.vcat.safety{background:var(--danger);color:#fff;}
+.vcat.quality{background:var(--info);color:#fff;}
+.vmand{position:absolute;top:6px;right:6px;background:rgba(255,46,99,0.85);color:#fff;font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;letter-spacing:0.5px;}
+.vinfo{padding:10px 12px;}
+.vtitle{font-size:12px;font-weight:600;color:#e6f1ff;line-height:1.4;margin-bottom:4px;}
+.vmeta{display:flex;align-items:center;gap:10px;font-size:10px;color:var(--muted);}
+.vactions{display:flex;gap:5px;padding:0 12px 10px;}
+
+/* ── SECTION DIVIDER ── */
+.sec-div{display:flex;align-items:center;gap:10px;margin:14px 0 10px;}
+.sec-div-lbl{font-size:13px;font-weight:700;color:var(--accent);white-space:nowrap;letter-spacing:0.5px;}
+.sec-div-line{flex:1;height:1px;background:rgba(0,212,255,0.12);}
+.sec-div-cnt{font-size:10px;color:var(--muted);}
+
+/* ── SPEC TRAINING ── */
+.spec-outer{display:grid;grid-template-columns:220px 1fr;gap:12px;min-height:600px;}
+.spec-items-panel{background:var(--card);border-radius:10px;border:1px solid rgba(0,212,255,0.12);overflow:hidden;display:flex;flex-direction:column;}
+.spec-items-hdr{padding:8px 12px;background:rgba(0,212,255,0.07);border-bottom:1px solid rgba(0,212,255,0.1);font-size:11px;font-weight:600;color:var(--accent);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.spec-items-search{padding:6px 8px;border-bottom:1px solid rgba(0,212,255,0.08);flex-shrink:0;}
+.spec-items-search input{width:100%;padding:4px 8px;border:1px solid rgba(0,212,255,0.18);border-radius:4px;font-size:11px;background:rgba(0,212,255,0.05);color:#e6f1ff;outline:none;font-family:inherit;}
+.spec-items-search input::placeholder{color:var(--muted);}
+.spec-items-search input:focus{border-color:var(--accent);}
+.spec-items-list{overflow-y:auto;flex:1;}
+.spec-items-list::-webkit-scrollbar{width:3px;}
+.spec-items-list::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.2);}
+.spec-item-row{padding:6px 12px;cursor:pointer;border-bottom:1px solid rgba(0,212,255,0.05);transition:all 0.15s;display:flex;align-items:center;justify-content:space-between;}
+.spec-item-row:hover{background:rgba(0,212,255,0.07);}
+.spec-item-row.active{background:rgba(0,212,255,0.14);color:var(--accent);border-left:2px solid var(--accent);}
+.spec-item-name{font-size:11px;font-weight:500;color:#e6f1ff;}
+.spec-item-row.active .spec-item-name{color:var(--accent);}
+.spec-item-cnt{font-size:9px;color:var(--muted);background:rgba(0,212,255,0.1);padding:1px 5px;border-radius:10px;white-space:nowrap;}
+.spec-detail-panel{background:var(--card);border-radius:10px;border:1px solid rgba(0,212,255,0.12);overflow:hidden;display:flex;flex-direction:column;}
+.spec-detail-hdr{padding:10px 14px;background:rgba(0,212,255,0.06);border-bottom:1px solid rgba(0,212,255,0.1);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;flex-wrap:wrap;gap:6px;}
+.spec-detail-title{font-size:13px;font-weight:700;color:var(--accent);}
+.spec-detail-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.spec-detail-actions{display:flex;gap:5px;}
+.spec-types-wrap{padding:10px;flex:1;overflow-y:auto;}
+.spec-types-wrap::-webkit-scrollbar{width:3px;}
+.spec-types-wrap::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.2);}
+.spec-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:var(--muted);font-size:12px;gap:10px;}
+
+.types-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:8px;}
+.type-block{background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.1);border-radius:6px;overflow:hidden;transition:border-color 0.2s;}
+.type-block:hover{border-color:rgba(0,212,255,0.25);}
+.type-hdr{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:rgba(0,212,255,0.06);cursor:pointer;transition:background 0.15s;}
+.type-hdr:hover{background:rgba(0,212,255,0.1);}
+.type-name{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:0.4px;text-transform:uppercase;white-space:normal;overflow:visible;word-break:break-word;line-height:1.35;}
+.type-body{padding:6px 8px;display:flex;flex-direction:column;gap:5px;}
+.type-img-area{
+  width:100%;aspect-ratio:4/3;background:#06101e;border:1px dashed rgba(0,212,255,0.2);
+  border-radius:4px;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:3px;cursor:pointer;transition:all 0.2s;overflow:hidden;position:relative;
+}
+.type-img-area:hover{border-color:var(--accent);background:rgba(0,212,255,0.05);}
+.type-img-area img{width:100%;height:100%;object-fit:cover;display:none;position:absolute;inset:0;}
+.type-img-placeholder{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:9px;pointer-events:none;}
+.type-img-actions{display:flex;gap:4px;align-items:center;justify-content:space-between;}
+.type-img-label{font-size:9px;color:var(--muted);}
+
+.add-type-row{display:flex;gap:5px;padding:8px 10px;border-top:1px solid rgba(0,212,255,0.08);}
+.add-type-input{flex:1;padding:4px 8px;border:1px solid rgba(0,212,255,0.2);border-radius:4px;font-size:11px;background:rgba(0,212,255,0.05);color:#e6f1ff;outline:none;font-family:inherit;}
+.add-type-input::placeholder{color:var(--muted);}
+.add-type-input:focus{border-color:var(--accent);}
+.add-item-bar{padding:8px 10px;border-top:1px solid rgba(0,212,255,0.08);display:flex;gap:5px;flex-shrink:0;}
+.add-item-input{flex:1;padding:4px 8px;border:1px solid rgba(0,212,255,0.2);border-radius:4px;font-size:11px;background:rgba(0,212,255,0.05);color:#e6f1ff;outline:none;font-family:inherit;}
+.add-item-input::placeholder{color:var(--muted);}
+.add-item-input:focus{border-color:var(--accent);}
+
+/* ── IMAGE QUIZ MODAL ── */
+.quiz-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:600;align-items:center;justify-content:center;}
+.quiz-overlay.open{display:flex;}
+.quiz-box{background:#111827;border-radius:14px;width:92vw;max-width:700px;border:1px solid rgba(0,212,255,0.3);box-shadow:0 12px 60px rgba(0,0,0,0.7);display:flex;flex-direction:column;max-height:92vh;overflow:hidden;}
+.quiz-hdr{padding:14px 18px;background:rgba(0,212,255,0.08);border-bottom:1px solid rgba(0,212,255,0.12);display:flex;align-items:center;justify-content:space-between;}
+.quiz-title{font-size:14px;font-weight:700;color:var(--accent);}
+.quiz-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:0 4px;}
+.quiz-close:hover{color:#e6f1ff;}
+.quiz-body{padding:18px;flex:1;overflow-y:auto;}
+.quiz-progress{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.quiz-prog-bar{flex:1;height:4px;background:rgba(0,212,255,0.1);border-radius:2px;overflow:hidden;}
+.quiz-prog-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.4s;}
+.quiz-counter{font-size:11px;color:var(--muted);white-space:nowrap;}
+.quiz-q{font-size:14px;font-weight:700;color:#e6f1ff;margin-bottom:4px;line-height:1.5;}
+.quiz-q-sub{font-size:11px;color:var(--muted);margin-bottom:16px;}
+/* Image quiz options grid */
+.quiz-img-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.quiz-img-opt{border:2px solid rgba(0,212,255,0.18);border-radius:8px;cursor:pointer;overflow:hidden;transition:all 0.15s;background:rgba(0,212,255,0.04);display:flex;flex-direction:column;align-items:center;}
+.quiz-img-opt:hover{border-color:var(--accent);transform:scale(1.02);box-shadow:0 0 12px rgba(0,212,255,0.2);}
+.quiz-img-opt.correct{border-color:var(--ok);box-shadow:0 0 14px rgba(0,255,136,0.3);}
+.quiz-img-opt.wrong{border-color:var(--danger);box-shadow:0 0 14px rgba(255,46,99,0.2);}
+.quiz-img-opt.reveal{border-color:var(--ok);}
+.quiz-img-opt:disabled{cursor:default;}
+.quiz-img-swatch{width:100%;height:90px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;letter-spacing:1px;}
+.quiz-img-swatch img{width:100%;height:100%;object-fit:cover;}
+.quiz-img-label{padding:6px 10px;font-size:11px;font-weight:600;color:#e6f1ff;text-align:center;width:100%;background:rgba(0,0,0,0.25);}
+/* Text quiz options */
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{padding:9px 14px;border:1px solid rgba(0,212,255,0.18);border-radius:6px;cursor:pointer;font-size:12px;color:#e6f1ff;background:rgba(0,212,255,0.04);transition:all 0.15s;text-align:left;}
+.quiz-opt:hover{border-color:var(--accent);background:rgba(0,212,255,0.1);}
+.quiz-opt.correct{border-color:var(--ok);background:rgba(0,255,136,0.1);color:var(--ok);}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(255,46,99,0.1);color:var(--danger);}
+.quiz-opt.reveal{border-color:var(--ok);background:rgba(0,255,136,0.06);color:var(--ok);}
+.quiz-opt:disabled{cursor:default;}
+.quiz-feedback{margin-top:12px;padding:10px 12px;border-radius:6px;font-size:12px;}
+.quiz-feedback.correct{background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.2);color:var(--ok);}
+.quiz-feedback.wrong{background:rgba(255,46,99,0.08);border:1px solid rgba(255,46,99,0.2);color:var(--danger);}
+.quiz-actions{padding:14px 18px;border-top:1px solid rgba(0,212,255,0.1);display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.quiz-score{font-size:11px;color:var(--muted);}
+.quiz-score b{color:var(--accent);}
+.quiz-result{text-align:center;padding:20px;}
+.quiz-result-score{font-size:48px;font-weight:700;color:var(--accent);line-height:1;}
+.quiz-result-label{font-size:14px;color:var(--muted);margin-top:4px;}
+.quiz-result-detail{font-size:12px;color:#e6f1ff;margin-top:12px;}
+
+/* ── INSPECTION TRAINER (InspectPro) ── */
+.inspect-wrap{background:var(--bg);border-radius:10px;border:1px solid rgba(0,212,255,0.12);overflow:hidden;display:flex;flex-direction:column;min-height:700px;}
+.ipt-hdr{height:48px;background:linear-gradient(90deg,#0d1422,#0f1824);border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 1rem;gap:1rem;position:relative;overflow:hidden;}
+.ipt-hdr::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:scan 3s linear infinite;}
+@keyframes scan{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.ipt-logo{font-family:var(--fh);font-size:18px;font-weight:700;letter-spacing:3px;color:var(--accent);text-transform:uppercase;}
+.ipt-logo b{color:var(--acc2);}
+.ipt-tag{font-size:9px;color:var(--txt3);border:1px solid var(--bdr);padding:2px 7px;border-radius:2px;letter-spacing:1px;}
+.ipt-online{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:10px;color:var(--grn);letter-spacing:1px;}
+.ipt-dot{width:6px;height:6px;border-radius:50%;background:var(--grn);animation:blink 1.5s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.ipt-body{flex:1;display:grid;grid-template-columns:160px 1fr;overflow:hidden;}
+.ipt-sb{background:var(--bg2);border-right:1px solid var(--bdr);display:flex;flex-direction:column;overflow-y:auto;padding:.6rem 0;}
+.ipt-sb-lbl{font-size:9px;color:var(--txt3);letter-spacing:2px;padding:0 .8rem;margin-bottom:3px;text-transform:uppercase;}
+.ipt-ni{display:flex;align-items:center;gap:7px;padding:8px .8rem;cursor:pointer;border-left:3px solid transparent;transition:all .12s;}
+.ipt-ni:hover{background:rgba(0,200,240,.04);border-left-color:rgba(0,200,240,.2);}
+.ipt-ni.on{background:rgba(0,200,240,.07);border-left-color:var(--accent);}
+.ipt-nic{width:24px;height:24px;border-radius:3px;background:var(--bg3);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ipt-ni.on .ipt-nic{background:rgba(0,200,240,.1);border-color:var(--accent);}
+.ipt-nic svg{width:12px;height:12px;}
+.ipt-ntx{font-family:var(--fh);font-size:11px;font-weight:600;letter-spacing:1px;color:var(--txt2);}
+.ipt-ni.on .ipt-ntx{color:var(--accent);}
+.ipt-nst{font-size:9px;color:var(--txt3);margin-top:1px;}
+.ipt-nb{font-size:9px;padding:1px 5px;border-radius:6px;background:var(--bg3);color:var(--txt3);border:1px solid var(--bdr);margin-left:auto;white-space:nowrap;}
+.ipt-ni.on .ipt-nb{background:rgba(0,200,240,.1);color:var(--accent);border-color:var(--accent);}
+.ipt-sdiv{height:1px;background:var(--bdr);margin:5px .8rem;}
+.ipt-sp{margin:auto .8rem 0;background:var(--bg3);border:1px solid var(--bdr);border-radius:4px;padding:.6rem;}
+.ipt-spt{font-size:9px;color:var(--txt3);letter-spacing:2px;margin-bottom:5px;text-transform:uppercase;}
+.ipt-spr{display:flex;justify-content:space-between;padding:2px 0;font-size:10px;}
+.ipt-spr span:first-child{color:var(--txt2);}
+.ipt-spr span:last-child{color:var(--accent);}
+.ipt-main{overflow-y:auto;background:var(--bg);padding:.8rem;}
+.ipt-pane{display:none;}
+.ipt-pane.on{display:flex;flex-direction:column;gap:.7rem;}
+.ipt-mh{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+.ipt-mt{font-family:var(--fh);font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase;line-height:1;}
+.ipt-mt span{color:var(--accent);}
+.ipt-md{font-size:11px;color:var(--txt2);margin-top:3px;line-height:1.45;}
+.ipt-stag{font-size:10px;padding:3px 8px;border-radius:2px;background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.28);color:var(--warn);white-space:nowrap;letter-spacing:1px;}
+.ipt-cw{background:#000;border-radius:6px;overflow:auto;position:relative;}
+.ipt-cw canvas{display:block;image-rendering:pixelated;}
+.ipt-cam{position:absolute;top:6px;left:6px;font-size:9px;color:var(--txt3);letter-spacing:2px;text-transform:uppercase;background:rgba(0,0,0,.75);padding:2px 6px;border-radius:2px;border:1px solid var(--bdr);}
+.ipt-cb{background:var(--bg2);border:1px solid var(--bdr);border-radius:5px;padding:.65rem .8rem;display:flex;flex-direction:column;gap:8px;}
+.ipt-ir{display:flex;gap:7px;align-items:flex-end;flex-wrap:wrap;}
+.ipt-fg{display:flex;flex-direction:column;gap:3px;}
+.ipt-fl{font-size:9px;color:var(--txt3);letter-spacing:1.5px;text-transform:uppercase;}
+.ipt-fi{background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;color:var(--txt);font-family:var(--fm);font-size:13px;padding:5px 8px;width:85px;outline:none;transition:border-color .2s;}
+.ipt-fi:focus{border-color:var(--accent);}
+.ipt-fs{background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;color:var(--txt);font-family:var(--fh);font-size:12px;font-weight:600;letter-spacing:.5px;padding:5px 8px;outline:none;cursor:pointer;min-width:110px;}
+.ipt-bc{padding:6px 13px;font-family:var(--fh);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:3px;border:1px solid var(--accent);background:rgba(0,200,240,.1);color:var(--accent);cursor:pointer;transition:all .14s;}
+.ipt-bc:hover{background:rgba(0,200,240,.2);}
+.ipt-bn{padding:6px 11px;font-family:var(--fh);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-radius:3px;border:1px solid var(--bdr);background:transparent;color:var(--txt2);cursor:pointer;transition:all .14s;}
+.ipt-bn:hover{border-color:var(--txt2);color:var(--txt);}
+.ipt-tn{font-size:10px;color:var(--txt3);}
+.ipt-fb{padding:7px 10px;border-radius:3px;font-size:11px;display:none;animation:fi .2s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
+.ipt-fb.p{display:block;background:rgba(0,230,118,.07);border:1px solid rgba(0,230,118,.32);color:var(--grn);}
+.ipt-fb.f{display:block;background:rgba(255,51,51,.07);border:1px solid rgba(255,51,51,.32);color:var(--red);}
+.ipt-sc{display:flex;gap:5px;}
+.ipt-sp2{font-size:10px;padding:2px 7px;border-radius:2px;letter-spacing:1px;}
+.ipt-sp2.g{background:rgba(0,230,118,.09);color:var(--grn);border:1px solid rgba(0,230,118,.28);}
+.ipt-sp2.t{background:var(--bg3);color:var(--txt2);border:1px solid var(--bdr);}
+.ipt-hb{font-size:10px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;}
+.ipt-hx{font-size:11px;color:var(--txt2);background:rgba(0,200,240,.04);border:1px solid rgba(0,200,240,.14);border-radius:3px;padding:5px 8px;display:none;}
+.ipt-hx.show{display:block;}
+
+/* ── DASHBOARD ── */
+.dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-top:4px;}
+.dash-card{background:var(--card);border-radius:var(--radius);padding:14px;border:1px solid rgba(0,212,255,0.1);}
+.dash-card-title{font-size:12px;font-weight:600;color:#e6f1ff;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(0,212,255,0.1);display:flex;align-items:center;gap:7px;}
+.prog-item{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.prog-lbl{font-size:11px;color:#e6f1ff;min-width:160px;}
+.prog-trk{flex:1;height:5px;background:rgba(0,212,255,0.1);border-radius:3px;overflow:hidden;}
+.prog-bar{height:100%;border-radius:3px;background:var(--accent);transition:width 0.7s ease;}
+.prog-bar.ok{background:var(--ok);}
+.prog-bar.info{background:var(--info);}
+.prog-pct{font-size:10px;font-weight:600;color:var(--muted);min-width:28px;text-align:right;}
+.act-item{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid rgba(0,212,255,0.06);}
+.act-item:last-child{border:none;}
+.adot{width:7px;height:7px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+.adot.r{background:var(--danger);box-shadow:0 0 4px var(--danger);}
+.adot.g{background:var(--ok);box-shadow:0 0 4px var(--ok);}
+.adot.b{background:var(--info);box-shadow:0 0 4px var(--info);}
+.act-text{font-size:11px;color:#e6f1ff;line-height:1.4;}
+.act-time{font-size:9px;color:var(--muted);}
+
+/* ── EDIT CONTENT MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#111827;border-radius:var(--radius);width:90vw;max-width:560px;padding:22px;border:1px solid rgba(0,212,255,0.22);box-shadow:0 12px 50px rgba(0,0,0,0.6);max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:15px;font-weight:700;color:var(--accent);margin-bottom:4px;}
+.modal-sub{font-size:11px;color:var(--muted);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(0,212,255,0.1);}
+.form-row{margin-bottom:10px;}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.flbl{display:block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:4px;}
+.finput,.fselect,.ftarea{width:100%;padding:7px 10px;border:1px solid rgba(0,212,255,0.18);border-radius:4px;font-size:12px;font-family:inherit;outline:none;background:rgba(0,212,255,0.05);color:#e6f1ff;transition:all 0.15s;}
+.finput::placeholder{color:var(--muted);}
+.finput:focus,.fselect:focus,.ftarea:focus{border-color:var(--accent);background:rgba(0,212,255,0.09);}
+.ftarea{resize:vertical;min-height:80px;}
+.fselect option{background:#1a2235;color:#e6f1ff;}
+.upload-zone{width:100%;padding:16px;border:1px dashed rgba(0,212,255,0.25);border-radius:4px;text-align:center;cursor:pointer;color:var(--muted);font-size:11px;transition:all 0.15px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.upload-zone:hover{border-color:var(--accent);background:rgba(0,212,255,0.05);}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,212,255,0.1);}
+
+/* ── LIGHTBOX ── */
+.lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:800;align-items:center;justify-content:center;flex-direction:column;}
+.lb.open{display:flex;}
+.lb-cls{position:absolute;top:16px;right:20px;background:none;border:none;color:#e6f1ff;font-size:26px;cursor:pointer;opacity:0.6;}
+.lb-cls:hover{opacity:1;}
+.lb img{max-width:88vw;max-height:80vh;border-radius:8px;object-fit:contain;}
+.lb-cap{margin-top:12px;font-size:12px;color:var(--muted);}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;right:20px;background:#1a2235;border:1px solid rgba(0,212,255,0.25);border-radius:8px;padding:8px 14px;display:flex;align-items:center;gap:8px;font-size:12px;z-index:900;opacity:0;transform:translateY(8px);transition:all 0.3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+.tdot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 6px var(--ok);}
+
+/* ── EDIT CONTENT PANEL ── */
+.page-edit-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(255,204,0,0.06);border:1px solid rgba(255,204,0,0.15);border-radius:8px;margin-bottom:12px;}
+.page-edit-bar span{font-size:11px;color:var(--warn);flex:1;}
+.content-block-editable{position:relative;}
+.content-block-editable:hover .content-edit-trigger{opacity:1;}
+.content-edit-trigger{position:absolute;top:4px;right:4px;opacity:0;transition:opacity 0.15s;background:rgba(255,204,0,0.15);border:1px solid rgba(255,204,0,0.3);color:var(--warn);padding:2px 7px;border-radius:3px;font-size:9px;cursor:pointer;}
+</style>
+<script src="/backend-sync.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="combined-header">
+  <div class="brand">
+    <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M2 12h20"/></svg></div>
+    <div>
+      <div class="brand-title" style="color:var(--accent);" id="portal-title" onclick="editField('portal-title','Brand Title')">Toyota Training Hub</div>
+      <div style="font-size:9px;color:var(--muted);letter-spacing:1px;" id="portal-subtitle" onclick="editField('portal-subtitle','Portal Subtitle')">UNIFIED QUALITY & SAFETY PORTAL</div>
+    </div>
+  </div>
+  <div class="brand-sub" style="margin-left:8px;" id="portal-model" onclick="editField('portal-model','Model Code')">25MC · Engine A CNG</div>
+  <div class="header-right">
+    <!-- LANGUAGE SWITCHER -->
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('hi')">हि</button>
+      <button class="lang-btn" onclick="setLang('kn')">ಕ</button>
+      <button class="lang-btn" onclick="setLang('mr')">म</button>
+      <button class="lang-btn" onclick="setLang('ja')">日</button>
+    </div>
+    <div class="sys-time">
+      <div><div class="tv" id="tTime">00:00:00</div><div class="tl" id="tDate">—</div></div>
+      <div class="tsep">|</div>
+      <div style="display:flex;flex-direction:column;">
+        <div class="tv" style="font-size:10px;">LIVE</div>
+        <div class="tl">SYSTEM</div>
+      </div>
+    </div>
+    <div class="usr-dot">OP</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-controls" id="topNav">
+  <button class="nav-btn active" data-sec="dashboard"><span class="pill-dot" style="background:var(--ok);color:var(--ok);">●</span><span data-i18n="nav_dashboard">Dashboard</span></button>
+  <button class="nav-btn" data-sec="safety"><span class="pill-dot" style="background:var(--danger);color:var(--danger);">●</span><span data-i18n="nav_safety">Safety</span></button>
+  <button class="nav-btn" data-sec="quality"><span class="pill-dot" style="background:var(--info);color:var(--info);">●</span><span data-i18n="nav_quality">Quality</span></button>
+  <button class="nav-btn" data-sec="spec"><span class="pill-dot" style="background:var(--warn);color:var(--warn);">●</span><span data-i18n="nav_spec">Spec Training</span></button>
+  <button class="nav-btn" data-sec="inspect"><span class="pill-dot" style="background:var(--accent);color:var(--accent);">●</span><span data-i18n="nav_inspect">InspectPro</span></button>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-sec" data-i18n="sb_training">Training</div>
+    <div class="sb-item active" onclick="showSec('dashboard',this)">📊 <span data-i18n="nav_dashboard">Dashboard</span></div>
+    <div class="sb-item" onclick="showSec('safety',this)">
+      🛡 <span data-i18n="sb_safety_videos">Safety Videos</span> <span class="sb-badge red" id="sb-sv">0</span>
+    </div>
+    <div class="sb-item" onclick="showSec('quality',this)">
+      ✅ <span data-i18n="sb_quality_videos">Quality Videos</span> <span class="sb-badge" id="sb-qv">0</span>
+    </div>
+    <div class="sb-sec" data-i18n="sb_spec_ops">Spec &amp; Ops</div>
+    <div class="sb-item" onclick="showSec('spec',this)">
+      🔧 <span data-i18n="sb_spec_types">Spec Types</span> <span class="sb-badge" id="sb-sp">32</span>
+    </div>
+    <div class="sb-item" onclick="showSec('inspect',this)">
+      🎯 <span data-i18n="sb_inspectpro">InspectPro Sim</span>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="sec-page active" id="sec-dashboard">
+      <div class="pg-hdr">
+        <div>
+          <div class="pg-tag" data-i18n="dash_tag">Overview</div>
+          <div class="editable-title">
+            <h1 id="dash-h1" data-i18n="dash_h1">Training Dashboard</h1>
+            <button class="edit-btn" onclick="openEditModal('dash-h1','Dashboard Headline')">✎</button>
+          </div>
+        </div>
+        <button class="btn btn-accent" onclick="openModal('video')">+ <span data-i18n="btn_add_content">Add Content</span></button>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card red"><div class="st-lbl" data-i18n="ds_safety_videos">Safety Videos</div><div class="st-val" id="ds-sv">0</div><div class="st-sub" data-i18n="ds_mandatory_2">0 mandatory</div></div>
+        <div class="stat-card"><div class="st-lbl" data-i18n="ds_quality_videos">Quality Videos</div><div class="st-val" id="ds-qv">0</div><div class="st-sub" data-i18n="ds_mandatory_3">0 mandatory</div></div>
+        <div class="stat-card warn"><div class="st-lbl" data-i18n="ds_spec_items">Spec Items</div><div class="st-val" id="ds-sp">32</div><div class="st-sub" data-i18n="ds_check_types">check types</div></div>
+        <div class="stat-card ok"><div class="st-lbl" data-i18n="ds_inspectpro">InspectPro</div><div class="st-val">4</div><div class="st-sub" data-i18n="ds_modules">sim modules</div></div>
+      </div>
+      <div class="dash-grid">
+        <div class="dash-card">
+          <div class="dash-card-title">
+            📈 <span data-i18n="dash_progress">Training Progress</span>
+            <button class="edit-btn" style="margin-left:auto;" onclick="openEditModal('dash-progress-title','Progress Card Title')">✎</button>
+          </div>
+          <div class="prog-item"><div class="prog-lbl" data-i18n="prog_safety">Safety Modules</div><div class="prog-trk"><div class="prog-bar" style="width:72%;"></div></div><div class="prog-pct">72%</div></div>
+          <div class="prog-item"><div class="prog-lbl" data-i18n="prog_quality">Quality Modules</div><div class="prog-trk"><div class="prog-bar ok" style="width:60%;"></div></div><div class="prog-pct">60%</div></div>
+          <div class="prog-item"><div class="prog-lbl" data-i18n="prog_spec">Spec Types</div><div class="prog-trk"><div class="prog-bar info" style="width:45%;"></div></div><div class="prog-pct">45%</div></div>
+          <div class="prog-item"><div class="prog-lbl" data-i18n="prog_inspect">InspectPro Sim</div><div class="prog-trk"><div class="prog-bar" style="width:55%;background:var(--accent);"></div></div><div class="prog-pct">55%</div></div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-title">
+            🔔 <span data-i18n="dash_activity">Recent Activity</span>
+            <button class="edit-btn" style="margin-left:auto;" onclick="openEditModal('dash-activity-title','Activity Card Title')">✎</button>
+          </div>
+          <div class="act-item"><div class="adot b"></div><div><div class="act-text" data-i18n="act1">InspectPro Sim integrated — 4 visual modules available</div><div class="act-time" data-i18n="act_today">Today</div></div></div>
+          <div class="act-item"><div class="adot r"></div><div><div class="act-text" data-i18n="act2">Image Quiz enabled — select correct colour/variant images</div><div class="act-time" data-i18n="act_today">Today</div></div></div>
+          <div class="act-item"><div class="adot g"></div><div><div class="act-text" data-i18n="act3">Multilanguage support added — EN / हि / ಕ / म / 日</div><div class="act-time" data-i18n="act_today">Today</div></div></div>
+          <div class="act-item"><div class="adot g"></div><div><div class="act-text" data-i18n="act4">Portal updated — SOS page removed per guidelines</div><div class="act-time" data-i18n="act_today">Today</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAFETY -->
+    <div class="sec-page" id="sec-safety">
+      <div class="pg-hdr">
+        <div>
+          <div class="pg-tag" data-i18n="safety_tag">Safety Training</div>
+          <div class="editable-title">
+            <h1 id="safety-h1" data-i18n="safety_h1">Safety Videos</h1>
+            <button class="edit-btn" onclick="openEditModal('safety-h1','Safety Page Headline')">✎</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-danger" onclick="openModal('safety-video')">+ <span data-i18n="btn_add_video">Add Video</span></button>
+        </div>
+      </div>
+      <div class="pl-wrap">
+        <div class="player-main">
+          <div class="player-screen"><video id="safety-vel"></video><div class="player-idle" id="safety-idle"><div class="idle-icon"><svg width="20" height="20" fill="var(--accent)" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div><div style="font-size:13px;color:var(--accent);font-weight:600;" data-i18n="safety_playlist">Safety Training Playlist</div><div style="font-size:10px;color:var(--muted);" data-i18n="playlist_hint">Press Play All or click a video</div></div></div>
+          <div class="player-controls">
+            <div class="pl-title" id="safety-ptitle" data-i18n="no_video_selected">— No video selected —</div>
+            <div class="pl-meta" id="safety-pmeta" data-i18n="playlist_hint">Select a video or press Play All to begin</div>
+            <div class="pl-btns">
+              <button class="play-all-btn" id="safety-pabtn" onclick="playAll('safety')">▶ <span data-i18n="play_all">Play All</span></button>
+              <button class="ctrl-btn" id="safety-prev" disabled onclick="plPrev('safety')">◀</button>
+              <button class="ctrl-btn" id="safety-next" disabled onclick="plNext('safety')">▶</button>
+              <span style="font-size:10px;color:var(--muted);margin-left:4px;" id="safety-plcnt"></span>
+            </div>
+            <div class="prog-wrap"><span id="safety-tcur">0:00</span><div class="prog-track" onclick="seekVid('safety',event)"><div class="prog-fill" id="safety-prog"></div></div><span id="safety-ttot">0:00</span></div>
+          </div>
+        </div>
+        <div class="pl-sidebar">
+          <div class="pl-hdr">🛡 <span data-i18n="playlist_label">Playlist</span> <span id="safety-plcount" style="margin-left:auto;font-size:10px;font-weight:400;color:var(--muted);">0</span></div>
+          <div class="pl-list" id="safety-pllist"></div>
+        </div>
+      </div>
+      <div class="search-bar"><input class="srch" data-i18n-placeholder="search_safety" placeholder="Search safety videos..." oninput="filterGrid('safety',this.value)"/></div>
+      <div class="sec-div"><span class="sec-div-lbl" data-i18n="all_safety_videos">All Safety Videos</span><div class="sec-div-line"></div><span class="sec-div-cnt" id="safety-gcnt"></span></div>
+      <div class="video-grid" id="safety-grid"></div>
+    </div>
+
+    <!-- QUALITY -->
+    <div class="sec-page" id="sec-quality">
+      <div class="pg-hdr">
+        <div>
+          <div class="pg-tag" data-i18n="quality_tag">Quality Training</div>
+          <div class="editable-title">
+            <h1 id="quality-h1" data-i18n="quality_h1">Quality Videos</h1>
+            <button class="edit-btn" onclick="openEditModal('quality-h1','Quality Page Headline')">✎</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-info" onclick="openModal('quality-video')">+ <span data-i18n="btn_add_video">Add Video</span></button>
+        </div>
+      </div>
+      <div class="pl-wrap">
+        <div class="player-main">
+          <div class="player-screen"><video id="quality-vel"></video><div class="player-idle" id="quality-idle"><div class="idle-icon" style="background:rgba(0,153,255,0.1);border-color:rgba(0,153,255,0.25);"><svg width="20" height="20" fill="var(--info)" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div><div style="font-size:13px;color:var(--info);font-weight:600;" data-i18n="quality_playlist">Quality Training Playlist</div><div style="font-size:10px;color:var(--muted);" data-i18n="playlist_hint">Press Play All or click a video</div></div></div>
+          <div class="player-controls">
+            <div class="pl-title" id="quality-ptitle" data-i18n="no_video_selected">— No video selected —</div>
+            <div class="pl-meta" id="quality-pmeta" data-i18n="playlist_hint">Select a video or press Play All to begin</div>
+            <div class="pl-btns">
+              <button class="play-all-btn" id="quality-pabtn" onclick="playAll('quality')">▶ <span data-i18n="play_all">Play All</span></button>
+              <button class="ctrl-btn" id="quality-prev" disabled onclick="plPrev('quality')">◀</button>
+              <button class="ctrl-btn" id="quality-next" disabled onclick="plNext('quality')">▶</button>
+              <span style="font-size:10px;color:var(--muted);margin-left:4px;" id="quality-plcnt"></span>
+            </div>
+            <div class="prog-wrap"><span id="quality-tcur">0:00</span><div class="prog-track" onclick="seekVid('quality',event)"><div class="prog-fill" id="quality-prog"></div></div><span id="quality-ttot">0:00</span></div>
+          </div>
+        </div>
+        <div class="pl-sidebar">
+          <div class="pl-hdr" style="color:var(--info);">✅ <span data-i18n="playlist_label">Playlist</span> <span id="quality-plcount" style="margin-left:auto;font-size:10px;font-weight:400;color:var(--muted);">0</span></div>
+          <div class="pl-list" id="quality-pllist"></div>
+        </div>
+      </div>
+      <div class="search-bar"><input class="srch" data-i18n-placeholder="search_quality" placeholder="Search quality videos..." oninput="filterGrid('quality',this.value)"/></div>
+      <div class="sec-div"><span class="sec-div-lbl" style="color:var(--info);" data-i18n="all_quality_videos">All Quality Videos</span><div class="sec-div-line"></div><span class="sec-div-cnt" id="quality-gcnt"></span></div>
+      <div class="video-grid" id="quality-grid"></div>
+    </div>
+
+    <!-- SPEC TRAINING -->
+    <div class="sec-page" id="sec-spec">
+      <div class="pg-hdr">
+        <div>
+          <div class="pg-tag" data-i18n="spec_tag">Specification Training</div>
+          <div class="editable-title">
+            <h1 id="spec-h1" data-i18n="spec_h1">Spec Types Reference</h1>
+            <button class="edit-btn" onclick="openEditModal('spec-h1','Spec Page Headline')">✎</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-warn" onclick="openQuiz('all')">🧠 <span data-i18n="quiz_all">Quiz — All Items</span></button>
+          <button class="btn btn-accent" onclick="openModal('additem')">+ <span data-i18n="btn_add_item">Add Item</span></button>
+        </div>
+      </div>
+      <div class="spec-outer">
+        <div class="spec-items-panel">
+          <div class="spec-items-hdr"><span>📦 <span data-i18n="items_label">Items</span> <span id="spec-item-total" style="font-weight:400;color:var(--muted);">32 items</span></span></div>
+          <div class="spec-items-search"><input id="spec-search" data-i18n-placeholder="search_items" placeholder="Search items..." oninput="filterSpecItems(this.value)"/></div>
+          <div class="spec-items-list" id="spec-items-list"></div>
+          <div class="add-item-bar">
+            <input class="add-item-input" id="new-item-name" data-i18n-placeholder="new_item_placeholder" placeholder="New item name..." onkeydown="if(event.key==='Enter')addCheckItem()"/>
+            <button class="btn btn-accent" style="padding:4px 8px;" onclick="addCheckItem()">+</button>
+          </div>
+        </div>
+        <div class="spec-detail-panel">
+          <div class="spec-detail-hdr">
+            <div>
+              <div class="spec-detail-title" id="spec-detail-title" data-i18n="spec_select_prompt">← Select an item</div>
+              <div class="spec-detail-sub" id="spec-detail-sub" data-i18n="spec_detail_sub">Click any item from the list to view its spec types</div>
+            </div>
+            <div class="spec-detail-actions">
+              <button class="btn btn-warn" id="spec-quiz-btn" style="display:none;" onclick="openQuiz('current')">🧠 <span data-i18n="quiz_this_item">Quiz This Item</span></button>
+              <button class="btn btn-ghost" id="spec-add-type-btn" style="display:none;" onclick="showAddType()">+ <span data-i18n="type_label">Type</span></button>
+            </div>
+          </div>
+          <div class="spec-types-wrap" id="spec-types-wrap">
+            <div class="spec-empty"><svg width="32" height="32" fill="none" stroke="rgba(0,212,255,0.2)" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span data-i18n="spec_empty">Select a spec item to view types</span></div>
+          </div>
+          <div class="add-type-row" id="spec-add-type-row" style="display:none;">
+            <input class="add-type-input" id="new-type-name" placeholder="Type name (e.g. CHROME)..." onkeydown="if(event.key==='Enter')commitAddType()"/>
+            <button class="btn btn-accent" onclick="commitAddType()" data-i18n="btn_add">Add</button>
+            <button class="btn btn-ghost" onclick="hideAddType()">✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSPECTPRO -->
+    <div class="sec-page" id="sec-inspect">
+      <div class="pg-hdr">
+        <div>
+          <div class="pg-tag" data-i18n="inspect_tag">Simulation Trainer</div>
+          <div class="editable-title">
+            <h1 id="inspect-h1" data-i18n="inspect_h1">InspectPro — Visual Measurement</h1>
+            <button class="edit-btn" onclick="openEditModal('inspect-h1','InspectPro Headline')">✎</button>
+          </div>
+        </div>
+      </div>
+      <div class="inspect-wrap">
+        <div class="ipt-hdr">
+          <div class="ipt-logo">INSPECT<b>PRO</b></div>
+          <div class="ipt-tag">PRODUCTION LINE TRAINER v4.0</div>
+          <div class="ipt-online"><div class="ipt-dot"></div>SYSTEM ONLINE</div>
+        </div>
+        <div class="ipt-body">
+          <div class="ipt-sb">
+            <div class="ipt-sb-lbl">Modules</div>
+            <div class="ipt-ni on" id="nav-door" onclick="iswitch('door',this)">
+              <div class="ipt-nic"><svg viewBox="0 0 16 16" fill="none" stroke="#00c8f0" stroke-width="1.4"><rect x="1.5" y="1" width="5.5" height="14" rx=".5"/><rect x="9" y="1" width="5.5" height="14" rx=".5"/></svg></div>
+              <div><div class="ipt-ntx">Door Gap</div><div class="ipt-nst">B-pillar</div></div>
+              <div class="ipt-nb" id="nb-door">0/0</div>
+            </div>
+            <div class="ipt-ni" id="nav-clip" onclick="iswitch('clip',this)">
+              <div class="ipt-nic"><svg viewBox="0 0 16 16" fill="none" stroke="#7a87a8" stroke-width="1.4"><line x1="1" y1="8" x2="15" y2="8" stroke-width="2.5"/><rect x="6" y="5" width="4" height="6" rx="1"/><line x1="1" y1="5" x2="1" y2="11"/></svg></div>
+              <div><div class="ipt-ntx">Clip Pos.</div><div class="ipt-nst">From end</div></div>
+              <div class="ipt-nb" id="nb-clip">0/0</div>
+            </div>
+            <div class="ipt-ni" id="nav-insert" onclick="iswitch('insert',this)">
+              <div class="ipt-nic"><svg viewBox="0 0 16 16" fill="none" stroke="#7a87a8" stroke-width="1.4"><line x1="1" y1="8" x2="9" y2="8" stroke-width="2.5"/><rect x="9" y="4" width="6" height="8" rx=".5" fill="none"/><line x1="12" y1="5.5" x2="12" y2="10.5" stroke-width="1.5"/></svg></div>
+              <div><div class="ipt-ntx">Insertion</div><div class="ipt-nst">Pipe fit</div></div>
+              <div class="ipt-nb" id="nb-insert">0/0</div>
+            </div>
+            <div class="ipt-ni" id="nav-level" onclick="iswitch('level',this)">
+              <div class="ipt-nic"><svg viewBox="0 0 16 16" fill="none" stroke="#7a87a8" stroke-width="1.4"><rect x="1" y="5" width="6" height="8" rx=".5"/><rect x="9" y="3" width="6" height="8" rx=".5"/></svg></div>
+              <div><div class="ipt-ntx">Levelness</div><div class="ipt-nst">Flush/step</div></div>
+              <div class="ipt-nb" id="nb-level">0/0</div>
+            </div>
+            <div class="ipt-sdiv"></div>
+            <div class="ipt-sp">
+              <div class="ipt-spt">Session</div>
+              <div class="ipt-spr"><span>Attempts</span><span id="tot-att">0</span></div>
+              <div class="ipt-spr"><span>Correct</span><span id="tot-cor">0</span></div>
+              <div class="ipt-spr"><span>Accuracy</span><span id="tot-acc">—</span></div>
+            </div>
+          </div>
+          <div class="ipt-main">
+            <div id="pane-door" class="ipt-pane on">
+              <div class="ipt-mh"><div><div class="ipt-mt">Door <span>Gap</span></div><div class="ipt-md">Estimate clearance at B-pillar between front &amp; rear door.</div></div><div class="ipt-stag">SPEC: 3.0–7.0 mm</div></div>
+              <div class="ipt-sc"><span class="ipt-sp2 g" id="d-sc">Correct: 0</span><span class="ipt-sp2 t" id="d-tot">Attempts: 0</span></div>
+              <div class="ipt-cw"><canvas id="cDoor"></canvas><div class="ipt-cam">CAM-02 DOOR GAP</div></div>
+              <div class="ipt-cb">
+                <div class="ipt-ir">
+                  <div class="ipt-fg"><div class="ipt-fl">Gap (mm)</div><input class="ipt-fi" type="number" id="d-ans" step="0.5" placeholder="0.0"></div>
+                  <button class="ipt-bc" onclick="chk('door')">Check</button>
+                  <button class="ipt-bn" onclick="nd()">New ↻</button>
+                  <button class="ipt-hb" onclick="ith('hd')" style="margin-left:auto">Hint</button>
+                </div>
+                <div class="ipt-hx" id="hd">Yellow ruler is calibrated: 1 px = 1 mm. Spec range 3–7 mm.</div>
+                <div class="ipt-fb" id="d-fb"></div>
+                <div class="ipt-tn">Tolerance ±1.0 mm | Spec: 3.0 – 7.0 mm</div>
+              </div>
+            </div>
+            <div id="pane-clip" class="ipt-pane">
+              <div class="ipt-mh"><div><div class="ipt-mt">Clip <span>Position</span></div><div class="ipt-md">Estimate distance from hose open end to centre of spring clamp band.</div></div><div class="ipt-stag">SPEC: 2–7 mm from end</div></div>
+              <div class="ipt-sc"><span class="ipt-sp2 g" id="c-sc">Correct: 0</span><span class="ipt-sp2 t" id="c-tot">Attempts: 0</span></div>
+              <div class="ipt-cw"><canvas id="cClip"></canvas><div class="ipt-cam">CAM-07 CLIP POSITION</div></div>
+              <div class="ipt-cb">
+                <div class="ipt-ir">
+                  <div class="ipt-fg"><div class="ipt-fl">Distance (mm)</div><input class="ipt-fi" type="number" id="c-ans" step="1" placeholder="0"></div>
+                  <button class="ipt-bc" onclick="chk('clip')">Check</button>
+                  <button class="ipt-bn" onclick="nc()">New ↻</button>
+                  <button class="ipt-hb" onclick="ith('hc')" style="margin-left:auto">Hint</button>
+                </div>
+                <div class="ipt-hx" id="hc">Ruler anchored to open end. Green band = spec zone 2–7 mm.</div>
+                <div class="ipt-fb" id="c-fb"></div>
+                <div class="ipt-tn">Tolerance ±1 mm | Spec: 2 – 7 mm from open end</div>
+              </div>
+            </div>
+            <div id="pane-insert" class="ipt-pane">
+              <div class="ipt-mh"><div><div class="ipt-mt">Hose <span>Insertion</span></div><div class="ipt-md">Estimate gap between hose end and pipe stopper collar. Target = 0 mm (fully seated).</div></div><div class="ipt-stag">SPEC: 0 mm (full seat)</div></div>
+              <div class="ipt-sc"><span class="ipt-sp2 g" id="i-sc">Correct: 0</span><span class="ipt-sp2 t" id="i-tot">Attempts: 0</span></div>
+              <div class="ipt-cw"><canvas id="cInsert"></canvas><div class="ipt-cam">CAM-08 INSERTION</div></div>
+              <div class="ipt-cb">
+                <div class="ipt-ir">
+                  <div class="ipt-fg"><div class="ipt-fl">Gap to stopper (mm)</div><input class="ipt-fi" type="number" id="i-ans" step="0.5" placeholder="0.0"></div>
+                  <button class="ipt-bc" onclick="chk('insert')">Check</button>
+                  <button class="ipt-bn" onclick="ni_sim()">New ↻</button>
+                  <button class="ipt-hb" onclick="ith('hi')" style="margin-left:auto">Hint</button>
+                </div>
+                <div class="ipt-hx" id="hi">Silver pipe stub protrudes into hose. Stopper collar = reference. 0 mm gap = OK.</div>
+                <div class="ipt-fb" id="i-fb"></div>
+                <div class="ipt-tn">Tolerance ±0.5 mm | Spec: 0 mm gap to stopper collar</div>
+              </div>
+            </div>
+            <div id="pane-level" class="ipt-pane">
+              <div class="ipt-mh"><div><div class="ipt-mt">Door <span>Levelness</span></div><div class="ipt-md">Estimate flush/step between door and body panel. Positive = door proud, negative = recessed.</div></div><div class="ipt-stag">SPEC: 0 ± 2.0 mm</div></div>
+              <div class="ipt-sc"><span class="ipt-sp2 g" id="l-sc">Correct: 0</span><span class="ipt-sp2 t" id="l-tot">Attempts: 0</span></div>
+              <div class="ipt-cw"><canvas id="cLevel"></canvas><div class="ipt-cam">CAM-05 LEVELNESS</div></div>
+              <div class="ipt-cb">
+                <div class="ipt-ir">
+                  <div class="ipt-fg"><div class="ipt-fl">Step (mm)</div><input class="ipt-fi" type="number" id="l-ans" step="0.5" placeholder="0.0"></div>
+                  <button class="ipt-bc" onclick="chk('level')">Check</button>
+                  <button class="ipt-bn" onclick="nl_sim()">New ↻</button>
+                  <button class="ipt-hb" onclick="ith('hl')" style="margin-left:auto">Hint</button>
+                </div>
+                <div class="ipt-hx" id="hl">Dashed line = body panel reference. Green band = ±2 mm spec zone.</div>
+                <div class="ipt-fb" id="l-fb"></div>
+                <div class="ipt-tn">Tolerance ±0.5 mm | Spec: step ≤ ±2.0 mm</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main-layout -->
+
+<!-- ADD MODAL -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="am-title">Add Content</div>
+    <div class="modal-sub" id="am-sub">Fill in the details below</div>
+    <div id="am-form"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-accent" onclick="handleAdd()">✓ Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT HEADLINE MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-title" id="edit-modal-title">Edit Content</div>
+    <div class="modal-sub">Update the text below and click Save</div>
+    <div class="form-row"><label class="flbl" id="edit-field-label">Text</label><input class="finput" id="edit-field-input" placeholder="Enter text..."/></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
+      <button class="btn btn-accent" onclick="saveEdit()">✓ Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ MODAL -->
+<div class="quiz-overlay" id="quiz-modal">
+  <div class="quiz-box">
+    <div class="quiz-hdr">
+      <div class="quiz-title" id="quiz-title">🧠 Spec Type Quiz</div>
+      <button class="quiz-close" onclick="closeQuiz()">×</button>
+    </div>
+    <div class="quiz-body" id="quiz-body"></div>
+    <div class="quiz-actions">
+      <div class="quiz-score" id="quiz-score-display"></div>
+      <button class="btn btn-accent" id="quiz-next-btn" onclick="quizNext()" style="display:none;">Next →</button>
+      <button class="btn btn-ghost" id="quiz-restart-btn" onclick="quizRestart()" style="display:none;">↺ Restart</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb">
+  <button class="lb-cls" onclick="closeLb()">×</button>
+  <img id="lb-img" src="" alt=""/>
+  <div class="lb-cap" id="lb-cap"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><div class="tdot"></div><span id="toast-msg">Done</span></div>
+
+<script>
+// ═══════════════════════════════════════════
+// TRANSLATIONS
+// ═══════════════════════════════════════════
+const LANGS = {
+  en:{
+    nav_dashboard:'Dashboard', nav_safety:'Safety', nav_quality:'Quality',
+    nav_spec:'Spec Training', nav_inspect:'InspectPro',
+    sb_training:'Training', sb_safety_videos:'Safety Videos', sb_quality_videos:'Quality Videos',
+    sb_spec_ops:'Spec & Ops', sb_spec_types:'Spec Types', sb_inspectpro:'InspectPro Sim',
+    dash_tag:'Overview', dash_h1:'Training Dashboard', dash_progress:'Training Progress',
+    dash_activity:'Recent Activity',
+    ds_safety_videos:'Safety Videos', ds_quality_videos:'Quality Videos',
+    ds_spec_items:'Spec Items', ds_inspectpro:'InspectPro',
+    ds_mandatory_2:'2 mandatory', ds_mandatory_3:'3 mandatory',
+    ds_check_types:'check types', ds_modules:'sim modules',
+    act1:'InspectPro Sim integrated — 4 visual modules',
+    act2:'Image Quiz enabled — select correct colour/variant images',
+    act3:'Multilanguage support added — EN / हि / ಕ / म / 日',
+    act4:'Portal updated — SOS page removed per guidelines',
+    act_today:'Today',
+    prog_safety:'Safety Modules', prog_quality:'Quality Modules',
+    prog_spec:'Spec Types', prog_inspect:'InspectPro Sim',
+    safety_tag:'Safety Training', safety_h1:'Safety Videos',
+    safety_playlist:'Safety Training Playlist',
+    quality_tag:'Quality Training', quality_h1:'Quality Videos',
+    quality_playlist:'Quality Training Playlist',
+    playlist_label:'Playlist', playlist_hint:'Press Play All or click a video',
+    no_video_selected:'— No video selected —',
+    play_all:'Play All',
+    all_safety_videos:'All Safety Videos', all_quality_videos:'All Quality Videos',
+    search_safety:'Search safety videos...', search_quality:'Search quality videos...',
+    spec_tag:'Specification Training', spec_h1:'Spec Types Reference',
+    quiz_all:'Quiz — All Items', quiz_this_item:'Quiz This Item',
+    btn_add_content:'Add Content', btn_add_video:'Add Video',
+    btn_add_item:'Add Item', btn_add:'Add',
+    items_label:'Items', search_items:'Search items...',
+    new_item_placeholder:'New item name...',
+    spec_select_prompt:'← Select an item',
+    spec_detail_sub:'Click any item from the list to view its spec types',
+    spec_empty:'Select a spec item to view types',
+    type_label:'Type',
+    inspect_tag:'Simulation Trainer', inspect_h1:'InspectPro — Visual Measurement',
+    quiz_instruction:'Select the image that shows the correct type:'
+  },
+  hi:{
+    nav_dashboard:'डैशबोर्ड', nav_safety:'सुरक्षा', nav_quality:'गुणवत्ता',
+    nav_spec:'स्पेक ट्रेनिंग', nav_inspect:'इंस्पेक्टप्रो',
+    sb_training:'प्रशिक्षण', sb_safety_videos:'सुरक्षा वीडियो', sb_quality_videos:'गुणवत्ता वीडियो',
+    sb_spec_ops:'स्पेक और ऑप्स', sb_spec_types:'स्पेक प्रकार', sb_inspectpro:'इंस्पेक्टप्रो सिम',
+    dash_tag:'अवलोकन', dash_h1:'प्रशिक्षण डैशबोर्ड', dash_progress:'प्रशिक्षण प्रगति',
+    dash_activity:'हाल की गतिविधि',
+    ds_safety_videos:'सुरक्षा वीडियो', ds_quality_videos:'गुणवत्ता वीडियो',
+    ds_spec_items:'स्पेक आइटम', ds_inspectpro:'इंस्पेक्टप्रो',
+    ds_mandatory_2:'2 अनिवार्य', ds_mandatory_3:'3 अनिवार्य',
+    ds_check_types:'प्रकार जांचें', ds_modules:'सिम मॉड्यूल',
+    act1:'इंस्पेक्टप्रो सिम — 4 विज़ुअल मॉड्यूल उपलब्ध',
+    act2:'इमेज क्विज़ सक्षम — सही रंग/प्रकार चुनें',
+    act3:'बहुभाषी समर्थन जोड़ा गया',
+    act4:'पोर्टल अपडेट — SOS पेज हटाया गया',
+    act_today:'आज',
+    prog_safety:'सुरक्षा मॉड्यूल', prog_quality:'गुणवत्ता मॉड्यूल',
+    prog_spec:'स्पेक प्रकार', prog_inspect:'इंस्पेक्टप्रो सिम',
+    safety_tag:'सुरक्षा प्रशिक्षण', safety_h1:'सुरक्षा वीडियो',
+    safety_playlist:'सुरक्षा प्रशिक्षण प्लेलिस्ट',
+    quality_tag:'गुणवत्ता प्रशिक्षण', quality_h1:'गुणवत्ता वीडियो',
+    quality_playlist:'गुणवत्ता प्रशिक्षण प्लेलिस्ट',
+    playlist_label:'प्लेलिस्ट', playlist_hint:'Play All दबाएं या वीडियो चुनें',
+    no_video_selected:'— कोई वीडियो नहीं चुना —',
+    play_all:'सभी चलाएं',
+    all_safety_videos:'सभी सुरक्षा वीडियो', all_quality_videos:'सभी गुणवत्ता वीडियो',
+    search_safety:'सुरक्षा वीडियो खोजें...', search_quality:'गुणवत्ता वीडियो खोजें...',
+    spec_tag:'विशिष्टता प्रशिक्षण', spec_h1:'स्पेक प्रकार संदर्भ',
+    quiz_all:'क्विज़ — सभी आइटम', quiz_this_item:'इस आइटम की क्विज़',
+    btn_add_content:'सामग्री जोड़ें', btn_add_video:'वीडियो जोड़ें',
+    btn_add_item:'आइटम जोड़ें', btn_add:'जोड़ें',
+    items_label:'आइटम', search_items:'आइटम खोजें...',
+    new_item_placeholder:'नया आइटम नाम...',
+    spec_select_prompt:'← एक आइटम चुनें',
+    spec_detail_sub:'स्पेक प्रकार देखने के लिए कोई आइटम चुनें',
+    spec_empty:'स्पेक आइटम चुनें',
+    type_label:'प्रकार',
+    inspect_tag:'सिमुलेशन ट्रेनर', inspect_h1:'इंस्पेक्टप्रो — विज़ुअल माप',
+    quiz_instruction:'सही प्रकार की छवि चुनें:'
+  },
+  kn:{
+    nav_dashboard:'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', nav_safety:'ಸುರಕ್ಷತೆ', nav_quality:'ಗುಣಮಟ್ಟ',
+    nav_spec:'ಸ್ಪೆಕ್ ತರಬೇತಿ', nav_inspect:'ಇನ್ಸ್ಪೆಕ್ಟ್‌ಪ್ರೊ',
+    sb_training:'ತರಬೇತಿ', sb_safety_videos:'ಸುರಕ್ಷತಾ ವಿಡಿಯೊಗಳು', sb_quality_videos:'ಗುಣಮಟ್ಟ ವಿಡಿಯೊಗಳು',
+    sb_spec_ops:'ಸ್ಪೆಕ್ ಮತ್ತು ಕಾರ್ಯಾಚರಣೆ', sb_spec_types:'ಸ್ಪೆಕ್ ವಿಧಗಳು', sb_inspectpro:'ಇನ್ಸ್ಪೆಕ್ಟ್‌ಪ್ರೊ ಸಿಮ್',
+    dash_tag:'ಅವಲೋಕನ', dash_h1:'ತರಬೇತಿ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', dash_progress:'ತರಬೇತಿ ಪ್ರಗತಿ',
+    dash_activity:'ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ',
+    ds_safety_videos:'ಸುರಕ್ಷತಾ ವಿಡಿಯೊಗಳು', ds_quality_videos:'ಗುಣಮಟ್ಟ ವಿಡಿಯೊಗಳು',
+    ds_spec_items:'ಸ್ಪೆಕ್ ಐಟಂಗಳು', ds_inspectpro:'ಇನ್ಸ್ಪೆಕ್ಟ್‌ಪ್ರೊ',
+    ds_mandatory_2:'2 ಕಡ್ಡಾಯ', ds_mandatory_3:'3 ಕಡ್ಡಾಯ',
+    ds_check_types:'ವಿಧಗಳನ್ನು ಪರಿಶೀಲಿಸಿ', ds_modules:'ಸಿಮ್ ಮಾಡ್ಯೂಲ್‌ಗಳು',
+    act1:'ಇನ್ಸ್ಪೆಕ್ಟ್‌ಪ್ರೊ — 4 ವಿಷ್ಯುಯಲ್ ಮಾಡ್ಯೂಲ್‌ಗಳು',
+    act2:'ಚಿತ್ರ ಕ್ವಿಜ್ ಸಕ್ರಿಯ — ಸರಿಯಾದ ಬಣ್ಣ/ವಿಧ ಆಯ್ಕೆ ಮಾಡಿ',
+    act3:'ಬಹುಭಾಷಾ ಬೆಂಬಲ ಸೇರಿಸಲಾಗಿದೆ',
+    act4:'ಪೋರ್ಟಲ್ ನವೀಕರಿಸಲಾಗಿದೆ — SOS ಪುಟ ತೆಗೆಯಲಾಗಿದೆ',
+    act_today:'ಇಂದು',
+    prog_safety:'ಸುರಕ್ಷತಾ ಮಾಡ್ಯೂಲ್‌ಗಳು', prog_quality:'ಗುಣಮಟ್ಟ ಮಾಡ್ಯೂಲ್‌ಗಳು',
+    prog_spec:'ಸ್ಪೆಕ್ ವಿಧಗಳು', prog_inspect:'ಇನ್ಸ್ಪೆಕ್ಟ್‌ಪ್ರೊ ಸಿಮ್',
+    safety_tag:'ಸುರಕ್ಷತಾ ತರಬೇತಿ', safety_h1:'ಸುರಕ್ಷತಾ ವಿಡಿಯೊಗಳು',
+    safety_playlist:'ಸುರಕ್ಷತಾ ತರಬೇತಿ ಪ್ಲೇಲಿಸ್ಟ್',
+    quality_tag:'ಗುಣಮಟ್ಟ ತರಬೇತಿ', quality_h1:'ಗುಣಮಟ್ಟ ವಿಡಿಯೊಗಳು',
+    quality_playlist:'ಗುಣಮಟ್ಟ ತರಬೇತಿ ಪ್ಲೇಲಿಸ್ಟ್',
+    playlist_label:'ಪ್ಲೇಲಿಸ್ಟ್', playlist_hint:'Play All ಒತ್ತಿ ಅಥವಾ ವಿಡಿಯೊ ಆಯ್ಕೆ ಮಾಡಿ',
+    no_video_selected:'— ಯಾವ ವಿಡಿಯೊ ಆಯ್ಕೆಯಾಗಿಲ್ಲ —',
+    play_all:'ಎಲ್ಲ ಚಲಿಸಿ',
+    all_safety_videos:'ಎಲ್ಲ ಸುರಕ್ಷತಾ ವಿಡಿಯೊಗಳು', all_quality_videos:'ಎಲ್ಲ ಗುಣಮಟ್ಟ ವಿಡಿಯೊಗಳು',
+    search_safety:'ಸುರಕ್ಷತಾ ವಿಡಿಯೊ ಹುಡುಕಿ...', search_quality:'ಗುಣಮಟ್ಟ ವಿಡಿಯೊ ಹುಡುಕಿ...',
+    spec_tag:'ವಿಶೇಷಣ ತರಬೇತಿ', spec_h1:'ಸ್ಪೆಕ್ ವಿಧಗಳ ಉಲ್ಲೇಖ',
+    quiz_all:'ಕ್ವಿಜ್ — ಎಲ್ಲ ಐಟಂಗಳು', quiz_this_item:'ಈ ಐಟಂ ಕ್ವಿಜ್',
+    btn_add_content:'ವಿಷಯ ಸೇರಿಸಿ', btn_add_video:'ವಿಡಿಯೊ ಸೇರಿಸಿ',
+    btn_add_item:'ಐಟಂ ಸೇರಿಸಿ', btn_add:'ಸೇರಿಸಿ',
+    items_label:'ಐಟಂಗಳು', search_items:'ಐಟಂಗಳನ್ನು ಹುಡುಕಿ...',
+    new_item_placeholder:'ಹೊಸ ಐಟಂ ಹೆಸರು...',
+    spec_select_prompt:'← ಒಂದು ಐಟಂ ಆಯ್ಕೆ ಮಾಡಿ',
+    spec_detail_sub:'ಸ್ಪೆಕ್ ವಿಧಗಳನ್ನು ನೋಡಲು ಐಟಂ ಕ್ಲಿಕ್ ಮಾಡಿ',
+    spec_empty:'ಸ್ಪೆಕ್ ಐಟಂ ಆಯ್ಕೆ ಮಾಡಿ',
+    type_label:'ವಿಧ',
+    inspect_tag:'ಸಿಮ್ಯುಲೇಷನ್ ತರಬೇತಿ', inspect_h1:'ಇನ್ಸ್ಪೆಕ್ಟ್‌ಪ್ರೊ — ದೃಶ್ಯ ಮಾಪನ',
+    quiz_instruction:'ಸರಿಯಾದ ವಿಧದ ಚಿತ್ರ ಆಯ್ಕೆ ಮಾಡಿ:'
+  },
+  mr:{
+    nav_dashboard:'डॅशबोर्ड', nav_safety:'सुरक्षा', nav_quality:'गुणवत्ता',
+    nav_spec:'स्पेक प्रशिक्षण', nav_inspect:'इन्स्पेक्टप्रो',
+    sb_training:'प्रशिक्षण', sb_safety_videos:'सुरक्षा व्हिडिओ', sb_quality_videos:'गुणवत्ता व्हिडिओ',
+    sb_spec_ops:'स्पेक आणि ऑप्स', sb_spec_types:'स्पेक प्रकार', sb_inspectpro:'इन्स्पेक्टप्रो सिम',
+    dash_tag:'आढावा', dash_h1:'प्रशिक्षण डॅशबोर्ड', dash_progress:'प्रशिक्षण प्रगती',
+    dash_activity:'अलीकडील क्रियाकलाप',
+    ds_safety_videos:'सुरक्षा व्हिडिओ', ds_quality_videos:'गुणवत्ता व्हिडिओ',
+    ds_spec_items:'स्पेक आयटम', ds_inspectpro:'इन्स्पेक्टप्रो',
+    ds_mandatory_2:'2 अनिवार्य', ds_mandatory_3:'3 अनिवार्य',
+    ds_check_types:'प्रकार तपासा', ds_modules:'सिम मॉड्यूल',
+    act1:'इन्स्पेक्टप्रो सिम — 4 व्हिज्युअल मॉड्यूल उपलब्ध',
+    act2:'इमेज क्विझ सक्षम — योग्य रंग/प्रकार निवडा',
+    act3:'बहुभाषिक समर्थन जोडले गेले',
+    act4:'पोर्टल अद्यतनित — SOS पृष्ठ काढले गेले',
+    act_today:'आज',
+    prog_safety:'सुरक्षा मॉड्यूल', prog_quality:'गुणवत्ता मॉड्यूल',
+    prog_spec:'स्पेक प्रकार', prog_inspect:'इन्स्पेक्टप्रो सिम',
+    safety_tag:'सुरक्षा प्रशिक्षण', safety_h1:'सुरक्षा व्हिडिओ',
+    safety_playlist:'सुरक्षा प्रशिक्षण प्लेलिस्ट',
+    quality_tag:'गुणवत्ता प्रशिक्षण', quality_h1:'गुणवत्ता व्हिडिओ',
+    quality_playlist:'गुणवत्ता प्रशिक्षण प्लेलिस्ट',
+    playlist_label:'प्लेलिस्ट', playlist_hint:'Play All दाबा किंवा व्हिडिओ निवडा',
+    no_video_selected:'— कोणताही व्हिडिओ निवडला नाही —',
+    play_all:'सर्व चालवा',
+    all_safety_videos:'सर्व सुरक्षा व्हिडिओ', all_quality_videos:'सर्व गुणवत्ता व्हिडिओ',
+    search_safety:'सुरक्षा व्हिडिओ शोधा...', search_quality:'गुणवत्ता व्हिडिओ शोधा...',
+    spec_tag:'विशिष्टता प्रशिक्षण', spec_h1:'स्पेक प्रकार संदर्भ',
+    quiz_all:'क्विझ — सर्व आयटम', quiz_this_item:'या आयटमची क्विझ',
+    btn_add_content:'सामग्री जोडा', btn_add_video:'व्हिडिओ जोडा',
+    btn_add_item:'आयटम जोडा', btn_add:'जोडा',
+    items_label:'आयटम', search_items:'आयटम शोधा...',
+    new_item_placeholder:'नवीन आयटम नाव...',
+    spec_select_prompt:'← एक आयटम निवडा',
+    spec_detail_sub:'स्पेक प्रकार पाहण्यासाठी आयटम क्लिक करा',
+    spec_empty:'स्पेक आयटम निवडा',
+    type_label:'प्रकार',
+    inspect_tag:'सिम्युलेशन प्रशिक्षक', inspect_h1:'इन्स्पेक्टप्रो — व्हिज्युअल मोजमाप',
+    quiz_instruction:'योग्य प्रकाराची प्रतिमा निवडा:'
+  },
+  ja:{
+    nav_dashboard:'ダッシュボード', nav_safety:'安全', nav_quality:'品質',
+    nav_spec:'仕様トレーニング', nav_inspect:'インスペクトプロ',
+    sb_training:'トレーニング', sb_safety_videos:'安全動画', sb_quality_videos:'品質動画',
+    sb_spec_ops:'仕様と作業', sb_spec_types:'仕様タイプ', sb_inspectpro:'インスペクトプロSim',
+    dash_tag:'概要', dash_h1:'トレーニングダッシュボード', dash_progress:'トレーニング進捗',
+    dash_activity:'最近の活動',
+    ds_safety_videos:'安全動画', ds_quality_videos:'品質動画',
+    ds_spec_items:'仕様アイテム', ds_inspectpro:'インスペクトプロ',
+    ds_mandatory_2:'2 必須', ds_mandatory_3:'3 必須',
+    ds_check_types:'タイプ確認', ds_modules:'シムモジュール',
+    act1:'インスペクトプロSim — 4つの視覚モジュール',
+    act2:'画像クイズ有効 — 正しい色/タイプを選択',
+    act3:'多言語サポート追加 — EN / हि / ಕ / म / 日',
+    act4:'ポータル更新 — SOSページを削除',
+    act_today:'今日',
+    prog_safety:'安全モジュール', prog_quality:'品質モジュール',
+    prog_spec:'仕様タイプ', prog_inspect:'インスペクトプロSim',
+    safety_tag:'安全トレーニング', safety_h1:'安全動画',
+    safety_playlist:'安全トレーニング プレイリスト',
+    quality_tag:'品質トレーニング', quality_h1:'品質動画',
+    quality_playlist:'品質トレーニング プレイリスト',
+    playlist_label:'プレイリスト', playlist_hint:'Play Allを押すか動画を選択',
+    no_video_selected:'— 動画が選択されていません —',
+    play_all:'すべて再生',
+    all_safety_videos:'すべての安全動画', all_quality_videos:'すべての品質動画',
+    search_safety:'安全動画を検索...', search_quality:'品質動画を検索...',
+    spec_tag:'仕様トレーニング', spec_h1:'仕様タイプ リファレンス',
+    quiz_all:'クイズ — 全アイテム', quiz_this_item:'このアイテムのクイズ',
+    btn_add_content:'コンテンツを追加', btn_add_video:'動画を追加',
+    btn_add_item:'アイテムを追加', btn_add:'追加',
+    items_label:'アイテム', search_items:'アイテムを検索...',
+    new_item_placeholder:'新しいアイテム名...',
+    spec_select_prompt:'← アイテムを選択',
+    spec_detail_sub:'仕様タイプを表示するにはアイテムをクリック',
+    spec_empty:'仕様アイテムを選択してください',
+    type_label:'タイプ',
+    inspect_tag:'シミュレーション トレーナー', inspect_h1:'インスペクトプロ — 視覚測定',
+    quiz_instruction:'正しいタイプの画像を選択してください:'
+  }
+};
+
+let currentLang = 'en';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    b.classList.toggle('active', b.textContent.trim()===({en:'EN',hi:'हि',kn:'ಕ',mr:'म',ja:'日'}[lang]));
+  });
+  applyTranslations();
+  // Re-render grids to update any dynamic text
+  renderAll();
+  if(activeSpecItem) {
+    const it = DB.specItems.find(x=>x.name===activeSpecItem);
+    if(it) renderSpecTypes(it);
+  }
+}
+
+function t(key) {
+  return (LANGS[currentLang] && LANGS[currentLang][key]) || LANGS.en[key] || key;
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    el.textContent = t(key);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-placeholder');
+    el.placeholder = t(key);
+  });
+}
+
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+const DB = {
+  safetyVideos:[],
+  qualityVideos:[],
+  specItems:[
+    {name:'Vin Label',types:['MSIL','MSIL - S','TMC','TMC - T','TKML'],colors:['#cccccc','#aaaaaa','#eeeeee','#bbbbbb','#999999']},
+    {name:'Wheel Disc',types:['STEEL','Y BLACK','Y DIAMOND CUT','SILVER','FLOWER DIAMOND CUT','V BLACK','V DIAMOND CUT'],colors:['#888888','#222222','#cccccc','#c0c0c0','#aaaaaa','#111111','#bbbbbb']},
+    {name:'Driver Inner Garnish',types:['BLACK','BROWN','BORDEAUX'],colors:['#1a1a1a','#6b3a2a','#6b1a2a']},
+    {name:'Radiator Grill',types:['CHROME','SMOKED CHROME','WITH TEXTURE','WITHOUT TEXTURE'],colors:['#c0c0c0','#555555','#888888','#aaaaaa']},
+    {name:'Back Dr Ctr Garnish',types:['SILVER + BLACK','CHROME + BODY COLOR','SUZUKI TYPE 1'],colors:['#aaaaaa','#c0c0c0','#888888']},
+    {name:'Head Lamp Bezel',types:['CHROME','BLACK PAINTED','PAINTED','UNPAINTED'],colors:['#c0c0c0','#111111','#555555','#999999']},
+    {name:'Console Ornament',types:['BLACK','BROWN','BORDEAUX'],colors:['#1a1a1a','#6b3a2a','#6b1a2a']},
+    {name:'IP Garnish',types:['BLACK WITHOUT STICH','BLACK WITH SILVER STICH','BLACK WITH COPPER STICH','BORDEAUX WITHOUT STICH','BORDEAUX WITH SILVER STICH','BROWN WITHOUT STICH','BROWN WITH SILVER STICH'],colors:['#1a1a1a','#1a1a1a','#1a1a1a','#6b1a2a','#6b1a2a','#6b3a2a','#6b3a2a']},
+    {name:'Door Trim Fabric Material',types:['BLACK WITHOUT STICH','BLACK WITH SILVER STICH','BLACK WITH COPPER STICH','BORDEAUX WITHOUT STICH','BORDEAUX WITH SILVER STICH','BROWN WITHOUT STICH','BROWN WITH SILVER STICH'],colors:['#1a1a1a','#1a1a1a','#1a1a1a','#6b1a2a','#6b1a2a','#6b3a2a','#6b3a2a']},
+    {name:'AC Label',types:['WITH RED DOT','WITH BLUE DOT'],colors:['#cc2222','#2255cc']},
+    {name:'Battery Notice Label',types:['WITH','WARNING LABEL'],colors:['#ddcc00','#ff4400']},
+    {name:'Battery Information Label',types:['WITH 1','WITH 4','WITH ENGLISH'],colors:['#3355aa','#3355aa','#3355aa']},
+    {name:'Cooling Fan Label',types:['SPANISH FONT','HINDI FONT','ARABIC FONT'],colors:['#cc8800','#cc4400','#4488cc']},
+    {name:'Ignition Switch',types:['BLUE BIG RING','BLACK BIG RING'],colors:['#2255cc','#111111']},
+    {name:'Console Rear Vent',types:['3 POINT SILVER','UNPAINTED'],colors:['#c0c0c0','#888888']},
+    {name:'Tyre Pressure Label',types:['BLACK FONT','BLUE FONT'],colors:['#111111','#2255cc']},
+    {name:'Fuel Consumption Label',types:['H','X','V','T','A','M'],colors:['#cc5500','#cc5500','#cc5500','#cc5500','#cc5500','#cc5500']},
+    {name:'A/C Register Bezel',types:['PAINTED','UNPAINTED'],colors:['#555555','#aaaaaa']},
+    {name:'Rear Bumper Lower Garnish',types:['TYPE - 1 GRAY (S)','TYPE - 2 GRAY (T)','TYPE - 2 SILVER (S)'],colors:['#888888','#777777','#c0c0c0']},
+    {name:'Overhead Console',types:['WITH OVERHEAD CONSOLE','WITHOUT OVERHEAD CONSOLE'],colors:['#2a2a2a','#555555']},
+    {name:'Fuse Box Cover',types:['A','B','C','D'],colors:['#333333','#444444','#555555','#666666']},
+    {name:'Seat Material',types:['LEATHER','STD CLOTH'],colors:['#4a3828','#555555']},
+    {name:'Fuel Limitation Label',types:['WITH UPTO E20 ONLY','WITH UNLEADED FUEL ONLY'],colors:['#22aa44','#cc8800']},
+    {name:'Quarter Pillar Garnish',types:['SILVER','BLACK','SMOKED CHROME'],colors:['#c0c0c0','#111111','#555555']},
+    {name:'Key Remote',types:['NO (S)','TYPE A (S)','TYPE A (T)','WITH - CE','WITHOUT - CE'],colors:['#888888','#333333','#444444','#2255cc','#555555']},
+    {name:'Power Window Bezel',types:['PAINTED','UNPAINTED'],colors:['#333333','#999999']},
+    {name:'Tweeter Cover',types:['WITH SPEAKER','WITHOUT SPEAKER (NO HOLE)'],colors:['#222222','#555555']},
+    {name:'Battery Cover',types:['SINGLE SLOT','DOUBLE SLOT','WITHOUT'],colors:['#333333','#222222','#888888']},
+    {name:'Front Bumper Lower Garnish',types:['SILVER','GRAY'],colors:['#c0c0c0','#888888']},
+    {name:'Shift Lever Knob',types:['BLACK + CHROME','UNPAINTED'],colors:['#111111','#999999']},
+    {name:'Engine Tag Name Mark',types:['BLUE HYBRID','HYBRID','BLACK HYBRID','SMART HYBRID','NEO DRIVE'],colors:['#2255cc','#22aa44','#111111','#cc8800','#8800cc']},
+    {name:'Rocker Mount',types:['PAINTED','UNPAINTED'],colors:['#333333','#999999']}
+  ]
+};
+
+const SPEC_IMAGES = {};
+
+// ═══════════════════════════════════════════
+// SPEC ITEM + TYPE TRANSLATIONS
+// ═══════════════════════════════════════════
+const SPEC_ITEM_NAMES = {
+  en:{
+    'Vin Label':'Vin Label','Wheel Disc':'Wheel Disc','Driver Inner Garnish':'Driver Inner Garnish',
+    'Radiator Grill':'Radiator Grill','Back Dr Ctr Garnish':'Back Dr Ctr Garnish',
+    'Head Lamp Bezel':'Head Lamp Bezel','Console Ornament':'Console Ornament','IP Garnish':'IP Garnish',
+    'Door Trim Fabric Material':'Door Trim Fabric Material','AC Label':'AC Label',
+    'Battery Notice Label':'Battery Notice Label','Battery Information Label':'Battery Information Label',
+    'Cooling Fan Label':'Cooling Fan Label','Ignition Switch':'Ignition Switch',
+    'Console Rear Vent':'Console Rear Vent','Tyre Pressure Label':'Tyre Pressure Label',
+    'Fuel Consumption Label':'Fuel Consumption Label','A/C Register Bezel':'A/C Register Bezel',
+    'Rear Bumper Lower Garnish':'Rear Bumper Lower Garnish','Overhead Console':'Overhead Console',
+    'Fuse Box Cover':'Fuse Box Cover','Seat Material':'Seat Material',
+    'Fuel Limitation Label':'Fuel Limitation Label','Quarter Pillar Garnish':'Quarter Pillar Garnish',
+    'Key Remote':'Key Remote','Power Window Bezel':'Power Window Bezel',
+    'Tweeter Cover':'Tweeter Cover','Battery Cover':'Battery Cover',
+    'Front Bumper Lower Garnish':'Front Bumper Lower Garnish','Shift Lever Knob':'Shift Lever Knob',
+    'Engine Tag Name Mark':'Engine Tag Name Mark','Rocker Mount':'Rocker Mount'
+  },
+  hi:{
+    'Vin Label':'विन लेबल','Wheel Disc':'व्हील डिस्क','Driver Inner Garnish':'ड्राइवर इनर गार्निश',
+    'Radiator Grill':'रेडिएटर ग्रिल','Back Dr Ctr Garnish':'बैक डोर सेंटर गार्निश',
+    'Head Lamp Bezel':'हेडलैंप बेज़ल','Console Ornament':'कंसोल ऑर्नामेंट','IP Garnish':'IP गार्निश',
+    'Door Trim Fabric Material':'दरवाज़ा ट्रिम फैब्रिक','AC Label':'AC लेबल',
+    'Battery Notice Label':'बैटरी नोटिस लेबल','Battery Information Label':'बैटरी जानकारी लेबल',
+    'Cooling Fan Label':'कूलिंग फैन लेबल','Ignition Switch':'इग्निशन स्विच',
+    'Console Rear Vent':'कंसोल रियर वेंट','Tyre Pressure Label':'टायर प्रेशर लेबल',
+    'Fuel Consumption Label':'ईंधन खपत लेबल','A/C Register Bezel':'A/C रजिस्टर बेज़ल',
+    'Rear Bumper Lower Garnish':'रियर बम्पर लोअर गार्निश','Overhead Console':'ओवरहेड कंसोल',
+    'Fuse Box Cover':'फ्यूज बॉक्स कवर','Seat Material':'सीट सामग्री',
+    'Fuel Limitation Label':'ईंधन सीमा लेबल','Quarter Pillar Garnish':'क्वार्टर पिलर गार्निश',
+    'Key Remote':'की रिमोट','Power Window Bezel':'पावर विंडो बेज़ल',
+    'Tweeter Cover':'ट्वीटर कवर','Battery Cover':'बैटरी कवर',
+    'Front Bumper Lower Garnish':'फ्रंट बम्पर लोअर गार्निश','Shift Lever Knob':'शिफ्ट लीवर नॉब',
+    'Engine Tag Name Mark':'इंजन टैग नाम मार्क','Rocker Mount':'रॉकर माउंट'
+  },
+  kn:{
+    'Vin Label':'ವಿನ್ ಲೇಬಲ್','Wheel Disc':'ವೀಲ್ ಡಿಸ್ಕ್','Driver Inner Garnish':'ಡ್ರೈವರ್ ಇನ್ನರ್ ಗಾರ್ನಿಷ್',
+    'Radiator Grill':'ರೇಡಿಯೇಟರ್ ಗ್ರಿಲ್','Back Dr Ctr Garnish':'ಬ್ಯಾಕ್ ಡೋರ್ ಸೆಂಟರ್ ಗಾರ್ನಿಷ್',
+    'Head Lamp Bezel':'ಹೆಡ್‌ಲ್ಯಾಂಪ್ ಬೆಜೆಲ್','Console Ornament':'ಕನ್ಸೋಲ್ ಆಭರಣ','IP Garnish':'IP ಗಾರ್ನಿಷ್',
+    'Door Trim Fabric Material':'ಡೋರ್ ಟ್ರಿಮ್ ಫ್ಯಾಬ್ರಿಕ್','AC Label':'AC ಲೇಬಲ್',
+    'Battery Notice Label':'ಬ್ಯಾಟರಿ ಸೂಚನಾ ಲೇಬಲ್','Battery Information Label':'ಬ್ಯಾಟರಿ ಮಾಹಿತಿ ಲೇಬಲ್',
+    'Cooling Fan Label':'ಕೂಲಿಂಗ್ ಫ್ಯಾನ್ ಲೇಬಲ್','Ignition Switch':'ಇಗ್ನಿಷನ್ ಸ್ವಿಚ್',
+    'Console Rear Vent':'ಕನ್ಸೋಲ್ ರಿಯರ್ ವೆಂಟ್','Tyre Pressure Label':'ಟೈರ್ ಒತ್ತಡ ಲೇಬಲ್',
+    'Fuel Consumption Label':'ಇಂಧನ ಬಳಕೆ ಲೇಬಲ್','A/C Register Bezel':'A/C ರಿಜಿಸ್ಟರ್ ಬೆಜೆಲ್',
+    'Rear Bumper Lower Garnish':'ರಿಯರ್ ಬಂಪರ್ ಲೋವರ್ ಗಾರ್ನಿಷ್','Overhead Console':'ಓವರ್‌ಹೆಡ್ ಕನ್ಸೋಲ್',
+    'Fuse Box Cover':'ಫ್ಯೂಸ್ ಬಾಕ್ಸ್ ಕವರ್','Seat Material':'ಸೀಟ್ ವಸ್ತು',
+    'Fuel Limitation Label':'ಇಂಧನ ಮಿತಿ ಲೇಬಲ್','Quarter Pillar Garnish':'ಕ್ವಾರ್ಟರ್ ಪಿಲ್ಲರ್ ಗಾರ್ನಿಷ್',
+    'Key Remote':'ಕೀ ರಿಮೋಟ್','Power Window Bezel':'ಪವರ್ ವಿಂಡೋ ಬೆಜೆಲ್',
+    'Tweeter Cover':'ಟ್ವೀಟರ್ ಕವರ್','Battery Cover':'ಬ್ಯಾಟರಿ ಕವರ್',
+    'Front Bumper Lower Garnish':'ಫ್ರಂಟ್ ಬಂಪರ್ ಲೋವರ್ ಗಾರ್ನಿಷ್','Shift Lever Knob':'ಶಿಫ್ಟ್ ಲಿವರ್ ನಾಬ್',
+    'Engine Tag Name Mark':'ಎಂಜಿನ್ ಟ್ಯಾಗ್ ಹೆಸರು ಮಾರ್ಕ್','Rocker Mount':'ರಾಕರ್ ಮೌಂಟ್'
+  },
+  mr:{
+    'Vin Label':'व्हिन लेबल','Wheel Disc':'व्हील डिस्क','Driver Inner Garnish':'ड्रायव्हर इनर गार्निश',
+    'Radiator Grill':'रेडिएटर ग्रिल','Back Dr Ctr Garnish':'बॅक डोर सेंटर गार्निश',
+    'Head Lamp Bezel':'हेडलॅम्प बेझेल','Console Ornament':'कन्सोल अलंकार','IP Garnish':'IP गार्निश',
+    'Door Trim Fabric Material':'दरवाजा ट्रिम फॅब्रिक','AC Label':'AC लेबल',
+    'Battery Notice Label':'बॅटरी सूचना लेबल','Battery Information Label':'बॅटरी माहिती लेबल',
+    'Cooling Fan Label':'कूलिंग फॅन लेबल','Ignition Switch':'इग्निशन स्विच',
+    'Console Rear Vent':'कन्सोल रियर व्हेंट','Tyre Pressure Label':'टायर दाब लेबल',
+    'Fuel Consumption Label':'इंधन वापर लेबल','A/C Register Bezel':'A/C रजिस्टर बेझेल',
+    'Rear Bumper Lower Garnish':'रियर बम्पर लोअर गार्निश','Overhead Console':'ओव्हरहेड कन्सोल',
+    'Fuse Box Cover':'फ्यूज बॉक्स कव्हर','Seat Material':'सीट साहित्य',
+    'Fuel Limitation Label':'इंधन मर्यादा लेबल','Quarter Pillar Garnish':'क्वार्टर पिलर गार्निश',
+    'Key Remote':'की रिमोट','Power Window Bezel':'पॉवर विंडो बेझेल',
+    'Tweeter Cover':'ट्वीटर कव्हर','Battery Cover':'बॅटरी कव्हर',
+    'Front Bumper Lower Garnish':'फ्रंट बम्पर लोअर गार्निश','Shift Lever Knob':'शिफ्ट लीव्हर नॉब',
+    'Engine Tag Name Mark':'इंजिन टॅग नाव मार्क','Rocker Mount':'रॉकर माउंट'
+  },
+  ja:{
+    'Vin Label':'VINラベル','Wheel Disc':'ホイールディスク','Driver Inner Garnish':'ドライバーインナーガーニッシュ',
+    'Radiator Grill':'ラジエーターグリル','Back Dr Ctr Garnish':'バックドアセンターガーニッシュ',
+    'Head Lamp Bezel':'ヘッドランプベゼル','Console Ornament':'コンソールオーナメント','IP Garnish':'インパネガーニッシュ',
+    'Door Trim Fabric Material':'ドアトリム生地','AC Label':'ACラベル',
+    'Battery Notice Label':'バッテリー注意ラベル','Battery Information Label':'バッテリー情報ラベル',
+    'Cooling Fan Label':'冷却ファンラベル','Ignition Switch':'イグニッションスイッチ',
+    'Console Rear Vent':'コンソールリアベント','Tyre Pressure Label':'タイヤ空気圧ラベル',
+    'Fuel Consumption Label':'燃費ラベル','A/C Register Bezel':'A/Cレジスターベゼル',
+    'Rear Bumper Lower Garnish':'リアバンパーロアガーニッシュ','Overhead Console':'オーバーヘッドコンソール',
+    'Fuse Box Cover':'ヒューズボックスカバー','Seat Material':'シート素材',
+    'Fuel Limitation Label':'燃料制限ラベル','Quarter Pillar Garnish':'クォーターピラーガーニッシュ',
+    'Key Remote':'キーリモコン','Power Window Bezel':'パワーウィンドウベゼル',
+    'Tweeter Cover':'ツイーターカバー','Battery Cover':'バッテリーカバー',
+    'Front Bumper Lower Garnish':'フロントバンパーロアガーニッシュ','Shift Lever Knob':'シフトレバーノブ',
+    'Engine Tag Name Mark':'エンジンタグネームマーク','Rocker Mount':'ロッカーマウント'
+  }
+};
+
+function tItem(name){ return (SPEC_ITEM_NAMES[currentLang]&&SPEC_ITEM_NAMES[currentLang][name])||name; }
+
+// ═══════════════════════════════════════════
+// EDIT HEADLINE & CONTENT
+// ═══════════════════════════════════════════
+let currentEditId = '';
+
+function editField(id, label) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  const curr = el.textContent;
+  const input = document.createElement('input');
+  input.className = 'inline-edit-input';
+  input.value = curr;
+  input.onblur = ()=>{ el.textContent = input.value || curr; el.style.display=''; input.remove(); };
+  input.onkeydown = e=>{ if(e.key==='Enter'||e.key==='Escape') input.blur(); };
+  el.style.display='none';
+  el.parentNode.insertBefore(input, el.nextSibling);
+  input.focus();
+}
+
+function openEditModal(id, label) {
+  currentEditId = id;
+  const el = document.getElementById(id);
+  document.getElementById('edit-modal-title').textContent = 'Edit: ' + label;
+  document.getElementById('edit-field-label').textContent = label;
+  document.getElementById('edit-field-input').value = el ? el.textContent : '';
+  document.getElementById('edit-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('edit-field-input').focus(),100);
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+}
+
+function saveEdit() {
+  const val = document.getElementById('edit-field-input').value.trim();
+  if(!val) { toast('Text cannot be empty'); return; }
+  const el = document.getElementById(currentEditId);
+  if(el) el.textContent = val;
+  closeEditModal();
+  toast('Content updated');
+}
+
+// ═══════════════════════════════════════════
+// IMAGE-BASED QUIZ — colour swatch renderer
+// ═══════════════════════════════════════════
+const QUIZ = { questions:[], idx:0, correct:0, answered:false, mode:'' };
+
+// Generate colour swatches as SVG data URIs
+function makeSwatchDataURI(hexColor, label) {
+  // Create a canvas-like SVG swatch
+  const lightness = parseInt(hexColor.slice(1,3),16)*0.299 +
+                    parseInt(hexColor.slice(3,5),16)*0.587 +
+                    parseInt(hexColor.slice(5,7),16)*0.114;
+  const textColor = lightness > 128 ? '#111111' : '#ffffff';
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='90'><rect width='200' height='90' fill='${hexColor}'/><text x='100' y='52' font-family='Arial' font-size='13' font-weight='bold' fill='${textColor}' text-anchor='middle'>${label}</text></svg>`;
+  return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+}
+
+function buildSpecQuiz(mode) {
+  const qs = [];
+  const pool = mode === 'current' && activeSpecItem
+    ? [DB.specItems.find(x=>x.name===activeSpecItem)].filter(Boolean)
+    : DB.specItems;
+
+  pool.forEach(item => {
+    if(item.types.length < 2) return;
+    // IMAGE QUIZ: pick a correct type, show swatches/images, user selects the right one
+    const correctIdx = Math.floor(Math.random()*item.types.length);
+    const correctType = item.types[correctIdx];
+    const correctColor = (item.colors && item.colors[correctIdx]) || '#444444';
+
+    // Collect distractor options (other types from same item or other items)
+    let distractors = item.types
+      .map((tp,i)=>({tp,color:(item.colors&&item.colors[i])||'#444444'}))
+      .filter((_,i)=>i!==correctIdx);
+    if(distractors.length < 3) {
+      // fill from other items of same kind
+      DB.specItems.filter(x=>x.name!==item.name).forEach(oth=>{
+        oth.types.forEach((tp,i)=>{
+          if(!item.types.includes(tp)) distractors.push({tp,color:(oth.colors&&oth.colors[i])||'#444444'});
+        });
+      });
+    }
+    distractors = shuffle(distractors).slice(0,3);
+    const allOpts = shuffle([{tp:correctType,color:correctColor,isCorrect:true},...distractors.map(d=>({...d,isCorrect:false}))]);
+
+    // Use uploaded image if available, otherwise colour swatch
+    const key = specKey(item.name, correctType);
+    const img = SPEC_IMAGES[key];
+
+    qs.push({
+      type:'image',
+      q: `${t('quiz_instruction')}`,
+      sub: `Item: "${item.name}" — Select: ${correctType}`,
+      opts: allOpts.map(o=>{
+        const k = specKey(item.name, o.tp);
+        const oImg = SPEC_IMAGES[k];
+        return {
+          label: o.tp,
+          color: o.color,
+          img: oImg || makeSwatchDataURI(o.color, o.tp),
+          isCorrect: o.isCorrect
+        };
+      }),
+      correct: correctType,
+      explain: `"${correctType}" is the correct type for "${item.name}".`
+    });
+  });
+  return shuffle(qs).slice(0, Math.min(qs.length, mode==='current'?8:20));
+}
+
+function getAllOtherTypes(excludeItem) {
+  return DB.specItems
+    .filter(x=>x.name!==excludeItem.name)
+    .flatMap(x=>x.types)
+    .filter((v,i,a)=>a.indexOf(v)===i && !excludeItem.types.includes(v));
+}
+
+function shuffle(arr) { return [...arr].sort(()=>Math.random()-0.5); }
+
+function openQuiz(mode) {
+  QUIZ.mode = mode;
+  QUIZ.idx = 0;
+  QUIZ.correct = 0;
+  QUIZ.answered = false;
+  QUIZ.questions = buildSpecQuiz(mode);
+  document.getElementById('quiz-title').textContent = mode==='current'
+    ? `🧠 Quiz — ${activeSpecItem}`
+    : '🧠 Spec Types Quiz — All Items';
+  if(QUIZ.questions.length===0){toast('Not enough data for quiz');return;}
+  document.getElementById('quiz-modal').classList.add('open');
+  renderQuizQ();
+}
+
+function closeQuiz() { document.getElementById('quiz-modal').classList.remove('open'); }
+
+function renderQuizQ() {
+  const q = QUIZ.questions[QUIZ.idx];
+  const total = QUIZ.questions.length;
+  const pct = (QUIZ.idx/total*100).toFixed(0);
+  document.getElementById('quiz-score-display').innerHTML = `Score: <b>${QUIZ.correct}</b>/${QUIZ.idx}`;
+  document.getElementById('quiz-next-btn').style.display = 'none';
+  document.getElementById('quiz-restart-btn').style.display = 'none';
+  QUIZ.answered = false;
+
+  document.getElementById('quiz-body').innerHTML = `
+    <div class="quiz-progress">
+      <div class="quiz-prog-bar"><div class="quiz-prog-fill" style="width:${pct}%"></div></div>
+      <div class="quiz-counter">${QUIZ.idx+1} / ${total}</div>
+    </div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-q-sub">${q.sub}</div>
+    <div class="quiz-img-opts" id="quiz-opts">
+      ${q.opts.map((opt,i)=>`
+        <button class="quiz-img-opt" id="qopt-${i}" onclick="selectQuizOpt(${i},'${escQ(opt.label)}','${escQ(q.correct)}')">
+          <div class="quiz-img-swatch" style="background:${opt.color};">
+            <img src="${opt.img}" alt="${opt.label}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'"/>
+          </div>
+          <div class="quiz-img-label">${opt.label}</div>
+        </button>`).join('')}
+    </div>
+    <div id="quiz-feedback" class="quiz-feedback" style="display:none;"></div>
+  `;
+}
+
+function escQ(s){return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+
+function selectQuizOpt(i, chosen, correct) {
+  if(QUIZ.answered) return;
+  QUIZ.answered = true;
+  const isCorrect = chosen === correct;
+  if(isCorrect) QUIZ.correct++;
+
+  document.querySelectorAll('.quiz-img-opt').forEach(btn=>btn.disabled=true);
+  document.querySelectorAll('.quiz-img-opt').forEach((btn)=>{
+    const lbl = btn.querySelector('.quiz-img-label');
+    if(lbl && lbl.textContent.trim()===correct) btn.classList.add('reveal');
+  });
+  document.getElementById('qopt-'+i).classList.remove('reveal');
+  document.getElementById('qopt-'+i).classList.add(isCorrect?'correct':'wrong');
+
+  const fb = document.getElementById('quiz-feedback');
+  const q = QUIZ.questions[QUIZ.idx];
+  fb.style.display = 'block';
+  fb.className = 'quiz-feedback '+(isCorrect?'correct':'wrong');
+  fb.innerHTML = (isCorrect?'✓ Correct! ':'✗ Incorrect. ')+q.explain;
+
+  document.getElementById('quiz-score-display').innerHTML = `Score: <b>${QUIZ.correct}</b>/${QUIZ.idx+1}`;
+
+  if(QUIZ.idx+1 >= QUIZ.questions.length) {
+    document.getElementById('quiz-next-btn').style.display = 'none';
+    setTimeout(showQuizResult,1200);
+  } else {
+    document.getElementById('quiz-next-btn').style.display = '';
+  }
+}
+
+function quizNext() {
+  QUIZ.idx++;
+  if(QUIZ.idx >= QUIZ.questions.length) { showQuizResult(); return; }
+  renderQuizQ();
+}
+
+function showQuizResult() {
+  const total = QUIZ.questions.length;
+  const pct = Math.round(QUIZ.correct/total*100);
+  const grade = pct>=90?'🏆 Excellent!':pct>=70?'✅ Good Job!':pct>=50?'📚 Keep Practicing':'🔁 Review Needed';
+  document.getElementById('quiz-body').innerHTML = `
+    <div class="quiz-result">
+      <div class="quiz-result-score">${QUIZ.correct}/${total}</div>
+      <div class="quiz-result-label">${pct}% — ${grade}</div>
+      <div class="quiz-result-detail" style="margin-top:16px;">
+        ${pct>=70?'Great performance! You have a solid understanding of the spec types.':'Review the spec items and try again to improve your score.'}
+      </div>
+    </div>`;
+  document.getElementById('quiz-next-btn').style.display = 'none';
+  document.getElementById('quiz-restart-btn').style.display = '';
+  document.getElementById('quiz-score-display').innerHTML = `Final: <b>${QUIZ.correct}</b>/${total}`;
+}
+
+function quizRestart() {
+  QUIZ.idx = 0;
+  QUIZ.correct = 0;
+  QUIZ.answered = false;
+  QUIZ.questions = buildSpecQuiz(QUIZ.mode);
+  renderQuizQ();
+}
+
+// ═══════════════════════════════════════════
+// SPEC ITEMS
+// ═══════════════════════════════════════════
+let activeSpecItem = null;
+
+function renderSpecItems(filter='') {
+  const list = document.getElementById('spec-items-list');
+  const filtered = DB.specItems.filter(it=>{
+    const display = tItem(it.name).toLowerCase();
+    const orig = it.name.toLowerCase();
+    return display.includes(filter.toLowerCase()) || orig.includes(filter.toLowerCase());
+  });
+  list.innerHTML = filtered.map(it=>{
+    const imgCount = it.types.filter(tp=>SPEC_IMAGES[specKey(it.name,tp)]).length;
+    return `<div class="spec-item-row${activeSpecItem===it.name?' active':''}" onclick="selectSpecItem('${it.name.replace(/'/g,"\\'")}')">
+      <span class="spec-item-name" title="${it.name}">${tItem(it.name)}</span>
+      <span class="spec-item-cnt">${it.types.length}t${imgCount?' · '+imgCount+'📷':''}</span>
+    </div>`;
+  }).join('');
+  updateStats();
+}
+
+function specKey(item, type){ return (item+'__'+type).replace(/[^a-zA-Z0-9_]/g,'_'); }
+
+function selectSpecItem(name) {
+  activeSpecItem = name;
+  const it = DB.specItems.find(x=>x.name===name);
+  if(!it) return;
+  document.getElementById('spec-detail-title').textContent = tItem(it.name);
+  document.getElementById('spec-detail-sub').textContent = it.types.length+' types — click image area to upload reference photo';
+  document.getElementById('spec-add-type-btn').style.display='';
+  document.getElementById('spec-quiz-btn').style.display='';
+  document.getElementById('spec-add-type-row').style.display='none';
+  renderSpecTypes(it);
+  renderSpecItems(document.getElementById('spec-search')?.value||'');
+}
+
+function renderSpecTypes(it) {
+  // Type name translations for common terms
+  const TYPE_TRANS = {
+    hi:{'CHROME':'क्रोम','BLACK':'काला','BROWN':'भूरा','SILVER':'चांदी','PAINTED':'रंगीत','UNPAINTED':'बिना रंग',
+        'WITH':'सहित','WITHOUT':'रहित','LEATHER':'चमड़ा','STEEL':'स्टील'},
+    kn:{'CHROME':'ಕ್ರೋಮ್','BLACK':'ಕಪ್ಪು','BROWN':'ಕಂದು','SILVER':'ಬೆಳ್ಳಿ','PAINTED':'ಬಣ್ಣ ಹಚ್ಚಿದ','UNPAINTED':'ಬಣ್ಣವಿಲ್ಲದ',
+        'WITH':'ಸಹಿತ','WITHOUT':'ರಹಿತ','LEATHER':'ಚರ್ಮ','STEEL':'ಉಕ್ಕು'},
+    mr:{'CHROME':'क्रोम','BLACK':'काळा','BROWN':'तपकिरी','SILVER':'चांदी','PAINTED':'रंगवलेले','UNPAINTED':'न रंगवलेले',
+        'WITH':'सहित','WITHOUT':'रहित','LEATHER':'चामडे','STEEL':'स्टील'},
+    ja:{'CHROME':'クロム','BLACK':'ブラック','BROWN':'ブラウン','SILVER':'シルバー','PAINTED':'塗装','UNPAINTED':'未塗装',
+        'WITH':'付き','WITHOUT':'なし','LEATHER':'レザー','STEEL':'スチール'}
+  };
+  function tType(tp){
+    if(currentLang==='en') return '';
+    const map=TYPE_TRANS[currentLang]||{};
+    // Check for exact match, else check if any key appears in tp
+    if(map[tp]) return map[tp];
+    for(const [k,v] of Object.entries(map)){if(tp.includes(k)) return v;}
+    return '';
+  }
+  const wrap = document.getElementById('spec-types-wrap');
+  wrap.innerHTML = `<div class="types-grid">${it.types.map((tp,ti)=>{
+    const key = specKey(it.name, tp);
+    const img = SPEC_IMAGES[key] || '';
+    const color = (it.colors && it.colors[ti]) || '#444444';
+    const localName = tType(tp);
+    return `<div class="type-block" id="tb-${key}">
+      <div class="type-hdr" onclick="toggleType('${key}')">
+        <div style="display:flex;flex-direction:column;gap:1px;flex:1;min-width:0;">
+          <span class="type-name" title="${tp}">${tp}</span>
+          ${localName?`<span style="font-size:9px;color:rgba(0,212,255,0.55);font-weight:500;">${localName}</span>`:''}
+        </div>
+        <span style="font-size:9px;color:${img?'var(--ok)':'var(--muted)'};">${img?'✓':''}</span>
+      </div>
+      <div class="type-body" id="tbody-${key}">
+        <div class="type-img-area" onclick="triggerImgUpload('${key}')" id="imgarea-${key}" style="background:${img?'transparent':color}20;">
+          <img id="imgel-${key}" src="${img}" alt="" style="${img?'display:block;':'display:none;'}"/>
+          <div class="type-img-placeholder" id="imgph-${key}" style="${img?'display:none;':'display:flex;flex-direction:column;align-items:center;gap:3px;'}">
+            <div style="width:100%;height:52px;background:${color};border-radius:3px;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:8px;font-weight:700;color:${parseInt(color.slice(1,3),16)*0.299+parseInt(color.slice(3,5),16)*0.587+parseInt(color.slice(5,7),16)*0.114>128?'#111':'#fff'};text-align:center;padding:0 4px;">${tp}</span>
+            </div>
+            <span style="font-size:8px;color:var(--muted);margin-top:2px;">📷 Upload photo</span>
+          </div>
+        </div>
+        <div class="type-img-actions">
+          <span class="type-img-label" id="imglbl-${key}" style="font-size:9px;color:var(--muted);">${img?'✓ Photo':'No photo'}</span>
+          ${img?`<button class="btn btn-ghost" style="font-size:9px;padding:1px 6px;" onclick="event.stopPropagation();removeTypeImg('${key}')">✕</button>
+                 <button class="btn btn-ok" style="font-size:9px;padding:1px 6px;" onclick="event.stopPropagation();viewTypeImg('${key}','${it.name} — ${tp}')">👁</button>`:''}
+        </div>
+      </div>
+      <input type="file" id="fup-${key}" accept="image/*" style="display:none;" onchange="onTypeImgUpload(this,'${key}')"/>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function toggleType(key) {
+  const body = document.getElementById('tbody-'+key);
+  if(body) body.style.display = body.style.display==='none'?'':'none';
+}
+function triggerImgUpload(key) {
+  const inp = document.getElementById('fup-'+key);
+  if(inp) inp.click();
+}
+function onTypeImgUpload(inp, key) {
+  if(!inp.files[0]) return;
+  const r = new FileReader();
+  r.onload = e => {
+    SPEC_IMAGES[key] = e.target.result;
+    const it = DB.specItems.find(x=>activeSpecItem===x.name);
+    if(it) renderSpecTypes(it);
+    renderSpecItems(document.getElementById('spec-search')?.value||'');
+    toast('Image uploaded');
+  };
+  r.readAsDataURL(inp.files[0]);
+}
+function removeTypeImg(key) {
+  delete SPEC_IMAGES[key];
+  const it = DB.specItems.find(x=>activeSpecItem===x.name);
+  if(it) renderSpecTypes(it);
+  renderSpecItems();
+  toast('Image removed');
+}
+function viewTypeImg(key, caption) {
+  const src = SPEC_IMAGES[key];
+  if(!src) return;
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lb-cap').textContent = caption;
+  document.getElementById('lb').classList.add('open');
+}
+function filterSpecItems(v) { renderSpecItems(v); }
+function showAddType() {
+  document.getElementById('spec-add-type-row').style.display='flex';
+  document.getElementById('new-type-name').focus();
+}
+function hideAddType() {
+  document.getElementById('spec-add-type-row').style.display='none';
+  document.getElementById('new-type-name').value='';
+}
+function commitAddType() {
+  const val = document.getElementById('new-type-name').value.trim().toUpperCase();
+  if(!val||!activeSpecItem) return;
+  const it = DB.specItems.find(x=>x.name===activeSpecItem);
+  if(!it) return;
+  if(it.types.includes(val)){toast('Type already exists');return;}
+  it.types.push(val);
+  if(!it.colors) it.colors = it.types.map(()=>'#666666');
+  else it.colors.push('#666666');
+  renderSpecTypes(it);
+  renderSpecItems();
+  hideAddType();
+  toast('Type "'+val+'" added');
+}
+function addCheckItem() {
+  const val = document.getElementById('new-item-name').value.trim();
+  if(!val) return;
+  if(DB.specItems.find(x=>x.name.toLowerCase()===val.toLowerCase())){toast('Item already exists');return;}
+  DB.specItems.push({name:val,types:[],colors:[]});
+  document.getElementById('new-item-name').value='';
+  renderSpecItems();
+  toast('Item "'+val+'" added');
+}
+
+// ═══════════════════════════════════════════
+// RENDER ALL
+// ═══════════════════════════════════════════
+function renderAll() {
+  renderPL('safety'); renderPL('quality');
+  renderGrid('safety'); renderGrid('quality');
+  renderSpecItems();
+  updateStats();
+}
+
+function updateStats() {
+  const specCount = DB.specItems.length;
+  document.getElementById('ds-sv').textContent = DB.safetyVideos.length;
+  document.getElementById('ds-qv').textContent = DB.qualityVideos.length;
+  document.getElementById('ds-sp').textContent = specCount;
+  document.getElementById('sb-sv').textContent = DB.safetyVideos.length;
+  document.getElementById('sb-qv').textContent = DB.qualityVideos.length;
+  document.getElementById('sb-sp').textContent = specCount;
+  document.getElementById('spec-item-total').textContent = specCount+' items';
+}
+
+// ═══════════════════════════════════════════
+// PLAYLIST ENGINE
+// ═══════════════════════════════════════════
+const PL = {safety:{idx:-1,playing:false},quality:{idx:-1,playing:false}};
+const SIM = {};
+
+function getVids(t){return t==='safety'?DB.safetyVideos:DB.qualityVideos;}
+function getVEl(t){return document.getElementById(t+'-vel');}
+
+function renderPL(t) {
+  const vids=getVids(t);
+  document.getElementById(t+'-plcount').textContent=vids.length;
+  document.getElementById(t+'-pllist').innerHTML=vids.map((v,i)=>`
+    <div class="pl-item${PL[t].idx===i?' playing':''}" id="pli-${t}-${i}" onclick="playAt(${i},'${t}')">
+      <div class="pl-num">${PL[t].idx===i?'▶':i+1}</div>
+      <div class="pl-info"><div class="pl-t">${v.title}</div><div class="pl-m">${v.date}</div></div>
+      <span class="pl-d">${v.duration}</span>
+      ${v.mandatory?'<div class="mandatory-dot" title="Mandatory"></div>':''}
+    </div>`).join('');
+}
+
+function renderGrid(t) {
+  const vids=getVids(t);
+  const cntEl=document.getElementById(t+'-gcnt');
+  if(cntEl) cntEl.textContent=vids.length+' video'+(vids.length!==1?'s':'');
+  document.getElementById(t+'-grid').innerHTML=vids.map((v,i)=>`
+    <div class="vcard${PL[t].idx===i?' ql':''}" id="vc-${v.id}">
+      <div class="vthumb" onclick="playAt(${i},'${t}')">
+        <div class="vplay"><svg width="14" height="14" fill="white" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+        <span class="vdur">${v.duration}</span>
+        <span class="vcat ${t}">${t==='safety'?'Safety':'Quality'}</span>
+        ${v.mandatory?'<span class="vmand">MANDATORY</span>':''}
+      </div>
+      <div class="vinfo"><div class="vtitle">${v.title}</div><div class="vmeta"><span>${v.duration}</span><span>${v.date}</span></div></div>
+      <div class="vactions">
+        <button class="btn btn-ok" style="flex:1;font-size:10px;padding:4px 8px;" onclick="playAt(${i},'${t}')">▶ Play</button>
+        <button class="btn btn-ghost" style="font-size:10px;padding:4px 7px;" onclick="event.stopPropagation();delVideo('${v.id}','${t}')">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+function playAt(i, t) {
+  const vids=getVids(t);
+  if(i<0||i>=vids.length) return;
+  PL[t].idx=i; PL[t].playing=true;
+  const v=vids[i];
+  const vel=getVEl(t);
+  const idle=document.getElementById(t+'-idle');
+  const accentClr=t==='safety'?'var(--accent)':'var(--info)';
+  document.getElementById(t+'-ptitle').textContent=v.title;
+  document.getElementById(t+'-pmeta').textContent=v.date+' · '+v.duration+(v.mandatory?' · MANDATORY':'');
+  document.getElementById(t+'-plcnt').textContent=(i+1)+' / '+vids.length;
+  document.getElementById(t+'-prev').disabled=i===0;
+  document.getElementById(t+'-next').disabled=i===vids.length-1;
+  const btn=document.getElementById(t+'-pabtn');
+  btn.classList.add('playing');
+  btn.querySelector('span').textContent='Pause';
+  clearInterval(SIM[t]);
+  if(v.src&&(v.local||v.src.startsWith('http'))){
+    idle.style.display='none'; vel.style.display='block';
+    vel.src=v.src; vel.load(); vel.play().catch(()=>{});
+    vel.onended=()=>autoNext(t);
+    vel.ontimeupdate=()=>updateProg(t);
+  } else {
+    vel.pause(); vel.src=''; vel.style.display='none'; idle.style.display='flex';
+    idle.innerHTML=`<div class="idle-icon" style="${t==='quality'?'background:rgba(0,153,255,0.1);border-color:rgba(0,153,255,0.25);':''}">
+      <svg width="20" height="20" fill="${accentClr}" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      <div style="font-size:13px;font-weight:600;color:#e6f1ff;text-align:center;max-width:260px;">${v.title}</div>
+      <div style="font-size:10px;color:var(--muted);">${v.duration} · ${v.date}</div>
+      <div style="font-size:11px;color:var(--muted);max-width:280px;text-align:center;line-height:1.5;">${v.desc}</div>`;
+    simProg(t, v.duration);
+  }
+  renderPL(t); renderGrid(t);
+  setTimeout(()=>{const el=document.getElementById('pli-'+t+'-'+i);if(el)el.scrollIntoView({block:'nearest',behavior:'smooth'});},100);
+}
+
+function autoNext(t){const n=PL[t].idx+1;if(n<getVids(t).length){setTimeout(()=>playAt(n,t),700);}else{plStop(t);toast('Playlist complete!');}}
+function playAll(t){if(PL[t].playing){plStop(t);}else{playAt(0,t);}}
+function plNext(t){if(PL[t].idx<getVids(t).length-1)playAt(PL[t].idx+1,t);}
+function plPrev(t){if(PL[t].idx>0)playAt(PL[t].idx-1,t);}
+
+function plStop(t){
+  PL[t].playing=false; PL[t].idx=-1;
+  clearInterval(SIM[t]);
+  const vel=getVEl(t); vel.pause(); vel.src=''; vel.style.display='none';
+  const idle=document.getElementById(t+'-idle');
+  idle.style.display='flex';
+  const c=t==='safety'?'var(--accent)':'var(--info)';
+  idle.innerHTML=`<div class="idle-icon" style="${t==='quality'?'background:rgba(0,153,255,0.1);border-color:rgba(0,153,255,0.25);':''}">
+    <svg width="20" height="20" fill="${c}" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+    <div style="font-size:13px;color:${c};font-weight:600;">${t==='safety'?'Safety':'Quality'} Training Playlist</div>
+    <div style="font-size:10px;color:var(--muted);">Press Play All or click a video</div>`;
+  document.getElementById(t+'-ptitle').textContent='— No video selected —';
+  document.getElementById(t+'-pmeta').textContent='Select a video or press Play All to begin';
+  document.getElementById(t+'-plcnt').textContent='';
+  document.getElementById(t+'-prev').disabled=true;
+  document.getElementById(t+'-next').disabled=true;
+  const btn=document.getElementById(t+'-pabtn');
+  btn.classList.remove('playing');
+  btn.querySelector('span').textContent=t('play_all');
+  document.getElementById(t+'-prog').style.width='0%';
+  document.getElementById(t+'-tcur').textContent='0:00';
+  document.getElementById(t+'-ttot').textContent='0:00';
+  renderPL(t); renderGrid(t);
+}
+
+function updateProg(t){const vel=getVEl(t);if(!vel.duration)return;const pct=(vel.currentTime/vel.duration)*100;document.getElementById(t+'-prog').style.width=pct+'%';document.getElementById(t+'-tcur').textContent=fmt(vel.currentTime);document.getElementById(t+'-ttot').textContent=fmt(vel.duration);}
+function simProg(t,durStr){clearInterval(SIM[t]);const parts=durStr.split(':').map(Number);const total=parts[0]*60+(parts[1]||0);let cur=0;document.getElementById(t+'-ttot').textContent=fmt(total);SIM[t]=setInterval(()=>{cur+=2;if(cur>total){clearInterval(SIM[t]);return;}document.getElementById(t+'-prog').style.width=(cur/total*100)+'%';document.getElementById(t+'-tcur').textContent=fmt(cur);},2000);}
+function seekVid(t,e){const vel=getVEl(t);if(!vel.duration)return;const r=e.currentTarget.getBoundingClientRect();vel.currentTime=((e.clientX-r.left)/r.width)*vel.duration;}
+function fmt(s){s=Math.floor(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+function filterGrid(t,q){document.getElementById(t+'-grid').querySelectorAll('.vcard').forEach(c=>{c.style.display=c.querySelector('.vtitle').textContent.toLowerCase().includes(q.toLowerCase())?'':'none';});}
+function delVideo(id,t){if(!confirm('Remove this video?'))return;if(t==='safety')DB.safetyVideos=DB.safetyVideos.filter(v=>v.id!==id);else DB.qualityVideos=DB.qualityVideos.filter(v=>v.id!==id);if(PL[t].playing)plStop(t);renderAll();toast('Video removed');}
+
+// ═══════════════════════════════════════════
+// ADD MODAL
+// ═══════════════════════════════════════════
+let addType='';
+function openModal(type){
+  addType=type;
+  const titles={video:'Add New Video','safety-video':'Add Safety Video','quality-video':'Add Quality Video',file:'Upload Reference File',additem:'Add Check Item'};
+  document.getElementById('am-title').textContent=titles[type]||'Add Content';
+  const f=document.getElementById('am-form');
+  if(type.includes('video')){
+    f.innerHTML=`
+      <div class="form-row"><label class="flbl">Title</label><input class="finput" id="f-title" placeholder="Video title"/></div>
+      <div class="form-row2">
+        <div class="form-row"><label class="flbl">Category</label><select class="fselect" id="f-cat"><option value="safety">Safety</option><option value="quality">Quality</option></select></div>
+        <div class="form-row"><label class="flbl">Duration</label><input class="finput" id="f-dur" placeholder="5:30"/></div>
+      </div>
+      <div class="form-row"><label class="flbl">Description</label><textarea class="ftarea" id="f-desc" placeholder="Brief description..."></textarea></div>
+      <div class="form-row"><label class="flbl">Upload Video or Paste URL</label>
+        <div class="upload-zone" onclick="document.getElementById('f-file').click()">⬆ Click to upload MP4, MOV, AVI</div>
+        <input type="file" id="f-file" accept="video/*" style="display:none" onchange="onFC(this,'f-fn')"/>
+        <div id="f-fn" style="font-size:10px;color:var(--ok);margin-top:4px;"></div>
+        <input class="finput" id="f-url" placeholder="or paste https://..." style="margin-top:6px;"/>
+      </div>
+      <div class="form-row"><label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);cursor:pointer;"><input type="checkbox" id="f-mand" style="width:auto;accent-color:var(--accent);"/> Mark as Mandatory</label></div>`;
+  } else if(type==='additem'){
+    f.innerHTML=`<div class="form-row"><label class="flbl">Check Item Name</label><input class="finput" id="f-title" placeholder="e.g. Door Handle Bezel"/></div>
+      <div class="form-row"><label class="flbl">Initial Types (comma separated)</label><input class="finput" id="f-types" placeholder="e.g. CHROME, BLACK, SILVER"/></div>`;
+  }
+  document.getElementById('add-modal').classList.add('open');
+}
+function closeModal(){document.getElementById('add-modal').classList.remove('open');}
+function onFC(inp,targetId){if(inp.files[0])document.getElementById(targetId).textContent='✓ '+inp.files[0].name;}
+function handleAdd(){
+  const title=document.getElementById('f-title')?.value.trim();
+  if(!title){toast('Please enter a title');return;}
+  if(addType.includes('video')){
+    const cat=document.getElementById('f-cat').value;
+    const dur=document.getElementById('f-dur')?.value||'0:00';
+    const desc=document.getElementById('f-desc')?.value||'';
+    const fi=document.getElementById('f-file');const url=document.getElementById('f-url')?.value||'';
+    const mand=document.getElementById('f-mand')?.checked||false;
+    let src='',local=false;
+    if(fi&&fi.files[0]){src=fi.files[0].name;local=true;}else if(url)src=url;
+    const v={id:'v'+Date.now(),title,duration:dur,cat,desc,src,local,date:new Date().toISOString().slice(0,10),mandatory:mand};
+    if(cat==='safety')DB.safetyVideos.push(v);else DB.qualityVideos.push(v);
+    renderAll();toast('Video added');
+  }else if(addType==='additem'){
+    if(DB.specItems.find(x=>x.name.toLowerCase()===title.toLowerCase())){toast('Item already exists');return;}
+    const typesRaw=document.getElementById('f-types')?.value||'';
+    const types=typesRaw.split(',').map(t=>t.trim().toUpperCase()).filter(Boolean);
+    DB.specItems.push({name:title,types,colors:types.map(()=>'#666666')});
+    renderSpecItems();toast('Item added');
+  }
+  closeModal();
+}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function showSec(id, el) {
+  document.querySelectorAll('.sec-page').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  document.querySelectorAll('#topNav .nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.sec===id));
+  if(id==='inspect') { setTimeout(()=>{nd();nc();ni_sim();nl_sim();},100); }
+}
+
+document.querySelectorAll('#topNav .nav-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    const id=this.dataset.sec;
+    document.querySelectorAll('.sec-page').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('#topNav .nav-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
+    document.getElementById('sec-'+id).classList.add('active');
+    this.classList.add('active');
+    if(id==='inspect') setTimeout(()=>{nd();nc();ni_sim();nl_sim();},100);
+  });
+});
+
+// ═══════════════════════════════════════════
+// LIGHTBOX / CLOSE / TOAST
+// ═══════════════════════════════════════════
+function closeLb(){document.getElementById('lb').classList.remove('open');}
+document.getElementById('add-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+document.getElementById('edit-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeEditModal();});
+document.getElementById('lb').addEventListener('click',e=>{if(e.target===e.currentTarget)closeLb();});
+document.getElementById('quiz-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeQuiz();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeEditModal();closeLb();closeQuiz();}});
+function toast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3200);}
+
+// ═══════════════════════════════════════════
+// CLOCK
+// ═══════════════════════════════════════════
+function tickClock(){const n=new Date();document.getElementById('tDate').textContent=n.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});document.getElementById('tTime').textContent=n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+tickClock();setInterval(tickClock,1000);
+
+// ═══════════════════════════════════════════
+// INSPECTPRO ENGINE
+// ═══════════════════════════════════════════
+// INSPECTPRO — Physical pixel calibration
+// PX = physical pixels per mm on this screen
+// Uses a 1-inch measurement div to detect actual screen DPI
+// ═══════════════════════════════════════════
+function getScreenPxPerMm(){
+  // Create a 1-inch div to measure real screen DPI
+  let ruler=document.createElement('div');
+  ruler.style.cssText='position:fixed;top:-200px;left:-200px;width:1in;height:1px;';
+  document.body.appendChild(ruler);
+  const ppi=ruler.offsetWidth; // pixels per inch at current zoom/DPI
+  document.body.removeChild(ruler);
+  return ppi/25.4; // convert to px/mm
+}
+let PX=getScreenPxPerMm();
+
+// Canvas dimensions in mm — fixed physical size
+const CANVAS_W_MM=220; // 220mm wide
+const CANVAS_H_MM=120; // 120mm tall
+
+function initCanvas(id){
+  const cv=document.getElementById(id);if(!cv)return;
+  PX=getScreenPxPerMm();
+  const w=Math.round(CANVAS_W_MM*PX);
+  const h=Math.round(CANVAS_H_MM*PX);
+  cv.width=w; cv.height=h;
+  cv.style.width=w+'px'; cv.style.height=h+'px';
+}
+
+function initAllCanvases(){
+  ['cDoor','cClip','cInsert','cLevel'].forEach(initCanvas);
+}
+const SC={door:[0,0],clip:[0,0],insert:[0,0],level:[0,0]};
+let DS={},CS={},IS={},LS={};
+
+function iswitch(id,el){
+  document.querySelectorAll('.ipt-pane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ipt-ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('pane-'+id).classList.add('on');
+  el.classList.add('on');
+}
+function ith(id){document.getElementById(id).classList.toggle('show');}
+function irnd(a,b,s){s=s||1;return+(a+Math.round(Math.random()*(b-a)/s)*s).toFixed(s<1?1:0);}
+function iclr(p){const a=document.getElementById(p+'-ans');if(a)a.value='';const fb=document.getElementById(p+'-fb');if(fb)fb.className='ipt-fb';}
+function iUpdG(){
+  const att=SC.door[1]+SC.clip[1]+SC.insert[1]+SC.level[1];
+  const cor=SC.door[0]+SC.clip[0]+SC.insert[0]+SC.level[0];
+  document.getElementById('tot-att').textContent=att;
+  document.getElementById('tot-cor').textContent=cor;
+  document.getElementById('tot-acc').textContent=att>0?Math.round(cor/att*100)+'%':'—';
+  ['door','clip','insert','level'].forEach(m=>document.getElementById('nb-'+m).textContent=SC[m][0]+'/'+SC[m][1]);
+}
+
+function nd(){DS={gap:irnd(2,9,0.5)};paintDoor();iclr('d');}
+
+function paintDoor(){
+  const cv=document.getElementById('cDoor');if(!cv)return;
+  const W=cv.width,H=cv.height,ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);
+  const gMM=DS.gap,gPx=Math.round(gMM*PX),CX=W/2;
+  const TOP=50,BOT=H-58,DH=BOT-TOP,FW=228,RW=188;
+  const fX=CX-FW-gPx/2,rX=CX+gPx/2;
+  function fillPaint(ctx,left,top,w,h){const g=ctx.createLinearGradient(left,top,left+w,top);g.addColorStop(0,'#b2b8c4');g.addColorStop(0.35,'#dce0ec');g.addColorStop(0.55,'#e4e8f2');g.addColorStop(1,'#b0b4c0');return g;}
+  function shadePaint(ctx,x,y,w,h){const g=ctx.createLinearGradient(x,y,x,y+h);g.addColorStop(0,'rgba(255,255,255,0.15)');g.addColorStop(1,'rgba(0,0,0,0.22)');return g;}
+  ;(()=>{const x=fX,w=FW,hingePad=48,bT=TOP+DH*0.415;
+    ctx.save();ctx.beginPath();ctx.moveTo(x+12,BOT);ctx.lineTo(x+w,BOT);ctx.lineTo(x+w,TOP);ctx.lineTo(x+hingePad+10,TOP);ctx.quadraticCurveTo(x+hingePad-4,TOP+4,x+hingePad-8,TOP+18);ctx.lineTo(x+7,TOP+44);ctx.quadraticCurveTo(x,TOP+58,x,TOP+76);ctx.lineTo(x,BOT-12);ctx.quadraticCurveTo(x,BOT,x+12,BOT);ctx.closePath();
+    ctx.fillStyle=fillPaint(ctx,x,TOP,w,DH);ctx.fill();ctx.fillStyle=shadePaint(ctx,x,TOP,w,DH);ctx.fill();ctx.strokeStyle='rgba(55,62,80,0.45)';ctx.lineWidth=1;ctx.stroke();ctx.restore();
+    const wL=x+hingePad+2,wR=x+w-4,wT=TOP+7,wB=bT-2;
+    ctx.save();ctx.beginPath();ctx.moveTo(wL,wB);ctx.lineTo(wL+2,wT+12);ctx.quadraticCurveTo(wL+5,wT+2,wL+16,wT);ctx.lineTo(wR,wT);ctx.lineTo(wR,wB);ctx.closePath();ctx.fillStyle='#07080f';ctx.fill();ctx.restore();
+    const cY=TOP+DH*0.565;ctx.save();ctx.beginPath();ctx.moveTo(x+5,cY+2);ctx.lineTo(x+w,cY+2);ctx.strokeStyle='rgba(55,65,85,0.55)';ctx.lineWidth=1.8;ctx.stroke();ctx.restore();
+    const hY=TOP+DH*0.527,hX=x+w*0.73;ctx.save();const hg=ctx.createLinearGradient(hX,hY-4,hX,hY+5);hg.addColorStop(0,'#dde0eb');hg.addColorStop(1,'#888c9a');ctx.fillStyle=hg;ctx.beginPath();ctx.roundRect(hX,hY-4,30,8,4);ctx.fill();ctx.restore();
+  })();
+  ;(()=>{const x=rX,w=RW,bT=TOP+DH*0.398;
+    ctx.save();ctx.beginPath();ctx.moveTo(x,BOT);ctx.lineTo(x,TOP);ctx.lineTo(x+w*0.63,TOP);ctx.quadraticCurveTo(x+w*0.78,TOP+6,x+w*0.88,TOP+22);ctx.bezierCurveTo(x+w*0.96,TOP+55,x+w+12,TOP+128,x+w+14,TOP+196);ctx.bezierCurveTo(x+w+14,TOP+260,x+w+8,BOT-65,x+w-9,BOT-26);ctx.quadraticCurveTo(x+w-6,BOT-4,x+w-18,BOT);ctx.lineTo(x,BOT);ctx.closePath();
+    ctx.fillStyle=fillPaint(ctx,x,TOP,w,DH);ctx.fill();ctx.fillStyle=shadePaint(ctx,x,TOP,w,DH);ctx.fill();ctx.strokeStyle='rgba(55,62,80,0.45)';ctx.lineWidth=1;ctx.stroke();ctx.restore();
+    const wL=x+4,wR=x+w*0.85,wT=TOP+7,wB=bT-2;
+    ctx.save();ctx.beginPath();ctx.moveTo(wL,wB);ctx.lineTo(wL,wT+3);ctx.lineTo(x+w*0.56,wT);ctx.quadraticCurveTo(x+w*0.74,wT+4,x+w*0.82,wT+18);ctx.lineTo(wR,wB);ctx.closePath();ctx.fillStyle='#07080f';ctx.fill();ctx.restore();
+    const cY=TOP+DH*0.562;ctx.save();ctx.beginPath();ctx.moveTo(x,cY+2);ctx.lineTo(x+w*0.86,cY+2);ctx.strokeStyle='rgba(55,65,85,0.55)';ctx.lineWidth=1.8;ctx.stroke();ctx.restore();
+    const hY=TOP+DH*0.525,hX=x+w*0.58;ctx.save();const hg=ctx.createLinearGradient(hX,hY-4,hX,hY+5);hg.addColorStop(0,'#dde0eb');hg.addColorStop(1,'#888c9a');ctx.fillStyle=hg;ctx.beginPath();ctx.roundRect(hX,hY-4,27,8,4);ctx.fill();ctx.restore();
+  })();
+  ctx.fillStyle='#000';ctx.fillRect(CX-gPx/2,TOP,gPx,DH);
+  ctx.fillStyle='rgba(255,255,255,0.06)';ctx.fillRect(CX-gPx/2,TOP,1.5,DH);
+  const arY=TOP+DH*0.62;
+  if(gPx>=6){arrowH(ctx,CX-gPx/2+1,arY,CX+gPx/2-1,'? mm',arY-14);}
+  else{ctx.fillStyle='#ff3333';ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.fillText('? mm',CX,arY-12);}
+  drawRuler(ctx,W-Math.round(28*PX)-16,H-40,28,PX,'#ffd700',5);
+  ctx.font='10px monospace';ctx.fillStyle='rgba(255,215,0,0.65)';ctx.textAlign='left';ctx.fillText('CLEARANCE: Min 3.0mm ~ Max 7.0mm',14,H-8);
+}
+
+function studioBG(ctx,W,H){
+  const bg=ctx.createRadialGradient(W*0.42,H*0.35,0,W*0.5,H*0.5,Math.max(W,H)*0.82);
+  bg.addColorStop(0,'#2e3240');bg.addColorStop(0.55,'#1c2030');bg.addColorStop(1,'#0c1020');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+  const v=ctx.createRadialGradient(W/2,H/2,H*0.2,W/2,H/2,H*0.8);
+  v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,0.52)');
+  ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
+}
+
+function drawHose(ctx,x0,x1,cy,rTop,rBot,alpha){
+  if(x1<=x0)return;alpha=alpha===undefined?1:alpha;
+  const len=x1-x0,ribS=12;
+  for(let rx=x0;rx<x1;rx+=ribS){const sw=Math.min(ribS,x1-rx),tval=(rx-x0)/len,rT=rTop*(1-tval*0.04),rB=rBot*(1-tval*0.04);const sg=ctx.createLinearGradient(0,cy-rT,0,cy+rB);sg.addColorStop(0,'#252830');sg.addColorStop(0.22,'#3e4248');sg.addColorStop(0.58,'#1e2025');sg.addColorStop(1,'#090a0c');ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=sg;ctx.fillRect(rx,cy-rT,sw+1,rT+rB);ctx.restore();}
+  for(let rx=x0+ribS/2;rx<x1;rx+=ribS){const tval=(rx-x0)/len,rT=rTop*(1-tval*0.04),rB=rBot*(1-tval*0.04),rd=(rT+rB)/2*0.90;const rg=ctx.createLinearGradient(0,cy-rd,0,cy+rd);rg.addColorStop(0,'rgba(0,0,0,0.92)');rg.addColorStop(0.5,'rgba(0,0,0,0.28)');rg.addColorStop(1,'rgba(0,0,0,0.95)');ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=rg;ctx.beginPath();ctx.ellipse(rx,cy,4.2,rd,0,0,Math.PI*2);ctx.fill();ctx.restore();}
+  ctx.save();ctx.globalAlpha=alpha;const sp=ctx.createLinearGradient(x0,0,x1,0);sp.addColorStop(0,'rgba(255,255,255,0)');sp.addColorStop(0.5,'rgba(255,255,255,0.32)');sp.addColorStop(1,'rgba(255,255,255,0)');ctx.beginPath();ctx.ellipse(x0+len/2,cy-rTop*0.80,len/2,4.5,0,0,Math.PI*2);ctx.fillStyle=sp;ctx.fill();ctx.restore();
+}
+
+function drawPipeStub(ctx,x0,x1,cy,r){
+  const len=x1-x0;ctx.save();const pg=ctx.createLinearGradient(0,cy-r,0,cy+r);pg.addColorStop(0.18,'#a8b8c4');pg.addColorStop(0.50,'#b8c8d4');pg.addColorStop(1,'#2c3440');ctx.fillStyle=pg;ctx.fillRect(x0,cy-r,len,r*2);
+  [x1-20,x1-7].forEach(rx=>{const cg=ctx.createLinearGradient(0,cy-r-3,0,cy+r+3);cg.addColorStop(0,'#5a6878');cg.addColorStop(0.6,'#7a8898');cg.addColorStop(1,'#363e4a');ctx.fillStyle=cg;ctx.fillRect(rx,cy-r-2,6,r*2+4);});
+  ctx.fillStyle='rgba(30,35,45,0.8)';ctx.fillRect(x0,cy-r,3,r*2);ctx.restore();
+}
+
+function drawClamp(ctx,cx,hw,cy,hr){
+  const cr=hr+5;ctx.save();
+  const bg=ctx.createLinearGradient(0,cy-cr,0,cy+cr);bg.addColorStop(0,'#606878');bg.addColorStop(0.40,'#c0c8d8');bg.addColorStop(1,'#343840');ctx.fillStyle=bg;ctx.beginPath();ctx.rect(cx-hw,cy-cr,hw*2,cr*2);ctx.fill();
+  ctx.fillStyle='rgba(0,0,0,0.30)';ctx.beginPath();ctx.rect(cx-hw,cy-hr,hw*2,hr*2);ctx.fill();
+  const eT=cy-cr;const ehg=ctx.createLinearGradient(cx-14,eT-20,cx+14,eT+4);ehg.addColorStop(0,'#82889a');ehg.addColorStop(0.65,'#989fb0');ctx.fillStyle=ehg;ctx.beginPath();ctx.rect(cx-12,eT-19,24,21);ctx.fill();ctx.strokeStyle='rgba(0,0,0,0.28)';ctx.lineWidth=0.5;ctx.stroke();
+  ctx.fillStyle='rgba(0,0,0,0.75)';ctx.fillRect(cx-2,eT-19,4,19);
+  const bY=cy+cr;const clg=ctx.createLinearGradient(0,bY,0,bY+14);clg.addColorStop(0,'#6e7480');clg.addColorStop(1,'#505560');ctx.fillStyle=clg;ctx.beginPath();ctx.rect(cx-9,bY,18,14);ctx.fill();
+  ctx.restore();
+}
+
+function floorShadow(ctx,cx,cy,rBot,len){const fy=cy+rBot+2;const fs=ctx.createRadialGradient(cx,fy+8,0,cx,fy+8,len*0.45);fs.addColorStop(0,'rgba(0,0,0,0.55)');fs.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=fs;ctx.fillRect(cx-len*0.48,fy,len*0.96,38);}
+
+function nc(){
+  const pools=[0,1,2,3,4,5,6,7,8,9,10,11,12];
+  const weights=[1,1,2,3,3,3,3,3,2,1,1,1,1];
+  let total=weights.reduce((a,b)=>a+b,0),r=Math.random()*total,cumul=0,pick=0;
+  for(let i=0;i<weights.length;i++){cumul+=weights[i];if(r<cumul){pick=i;break;}}
+  CS={dist:pools[pick]};paintClip();iclr('c');
+}
+
+function paintClip(){
+  const cv=document.getElementById('cClip');if(!cv)return;
+  const W=cv.width,H=cv.height,ctx=cv.getContext('2d');
+  studioBG(ctx,W,H);
+  const dist=CS.dist,dPx=Math.round(dist*PX),cy=H*0.46,rTop=52,rBot=49;
+  const openEndX=W-90,farX=18;
+  // clampCX is CENTRE of clamp band; clamp half-width hw=10
+  // dist is from open end to START (left edge) of clamp, so centre = openEndX - dPx - 10
+  const hw=10;
+  const clampStartX=openEndX-dPx;       // start line of clip
+  const clampCX=clampStartX-hw;         // centre of clamp (shifted left by hw)
+  floorShadow(ctx,(farX+openEndX)/2,cy,rBot,openEndX-farX);
+  drawHose(ctx,farX,openEndX,cy,rTop,rBot);
+  ctx.save();const edg=ctx.createLinearGradient(0,cy-rTop,0,cy+rBot);edg.addColorStop(0,'#404548');edg.addColorStop(0.6,'#505458');edg.addColorStop(1,'#282c30');ctx.fillStyle=edg;ctx.fillRect(openEndX,cy-rTop,4,rTop+rBot);ctx.restore();
+  drawClamp(ctx,clampCX,hw,cy,rTop);
+  const s1=openEndX-Math.round(7*PX),s2=openEndX-Math.round(2*PX);
+  ctx.fillStyle='rgba(0,230,118,0.055)';ctx.fillRect(s1,cy-rTop*2.0,s2-s1,rTop*4.0);
+  ctx.strokeStyle='rgba(0,230,118,0.25)';ctx.lineWidth=0.5;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(s1,cy-rTop*2.0);ctx.lineTo(s1,cy+rBot*2.0);ctx.moveTo(s2,cy-rTop*2.0);ctx.lineTo(s2,cy+rBot*2.0);ctx.stroke();ctx.setLineDash([]);
+  ctx.font='9px monospace';ctx.textAlign='center';ctx.fillStyle='rgba(0,230,118,0.5)';ctx.fillText('SPEC',(s1+s2)/2,cy-rTop*2.0-6);
+  // Arrow: from open end to START LINE of clip
+  const ay=cy-rTop-30;arrowH(ctx,openEndX,ay,clampStartX,'? mm',ay-13);
+  ctx.strokeStyle='#ff3333';ctx.lineWidth=1;[[openEndX],[clampStartX]].forEach(([x])=>{ctx.beginPath();ctx.moveTo(x,cy-rTop-10);ctx.lineTo(x,ay+3);ctx.stroke();});
+  // Start-line marker on clip (bright tick at left edge)
+  ctx.save();ctx.strokeStyle='#00e676';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(clampStartX,cy-rTop-8);ctx.lineTo(clampStartX,cy+rBot+8);ctx.stroke();ctx.restore();
+  drawRuler(ctx,openEndX-Math.round(12*PX),H-40,12,PX,'#ffd700',1);
+  ctx.font='10px monospace';ctx.fillStyle='rgba(255,215,0,0.65)';ctx.textAlign='left';ctx.fillText('CLIP: 2–7mm from open end to clip start line',14,H-8);
+}
+
+function ni_sim(){
+  const pool=[0,0,0.5,0.5,1,1,1.5,2,2.5,3,3.5,4,4.5,5,6,7,8];
+  IS={gap:pool[Math.floor(Math.random()*pool.length)]};paintInsert();iclr('i');
+}
+
+function paintInsert(){
+  const cv=document.getElementById('cInsert');if(!cv)return;
+  const W=cv.width,H=cv.height,ctx=cv.getContext('2d');
+  studioBG(ctx,W,H);
+  const gMM=IS.gap,gPx=Math.round(gMM*PX),cy=H*0.46,rTop=52,rBot=49,pipeR=rTop*0.80;
+  const pipeX1=W-75,stopX=pipeX1-Math.round(28*PX),hoseEndX=stopX-gPx,farX=18;
+  floorShadow(ctx,(farX+pipeX1)/2,cy,rBot,pipeX1-farX);
+  drawHose(ctx,farX,hoseEndX,cy,rTop,rBot);
+  ctx.save();const edg=ctx.createLinearGradient(0,cy-rTop,0,cy+rBot);edg.addColorStop(0,'#404548');edg.addColorStop(1,'#282c30');ctx.fillStyle=edg;ctx.fillRect(hoseEndX,cy-rTop,4,rTop+rBot);ctx.restore();
+  drawPipeStub(ctx,hoseEndX-4,pipeX1,cy,pipeR);
+  ctx.save();const scg=ctx.createLinearGradient(0,cy-pipeR-4,0,cy+pipeR+4);scg.addColorStop(0,'#505c6a');scg.addColorStop(0.55,'#707e8e');scg.addColorStop(1,'#303840');ctx.fillStyle=scg;ctx.fillRect(stopX-5,cy-pipeR-4,10,pipeR*2+8);ctx.restore();
+  if(gPx>=Math.round(1.5*PX)){const ay=cy-rTop-30;arrowH(ctx,hoseEndX,ay,stopX,'? mm',ay-13);ctx.strokeStyle='#ff3333';ctx.lineWidth=1;[[hoseEndX],[stopX]].forEach(([x])=>{ctx.beginPath();ctx.moveTo(x,cy-rTop-10);ctx.lineTo(x,ay+3);ctx.stroke();});}
+  else{ctx.save();ctx.fillStyle='#00e676';ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.fillText('≈ FULLY SEATED',hoseEndX-18,cy-rTop-28);ctx.restore();}
+  ctx.strokeStyle='rgba(255,180,0,0.45)';ctx.lineWidth=1;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(stopX,cy-pipeR-20);ctx.lineTo(stopX,cy+pipeR+20);ctx.stroke();ctx.setLineDash([]);
+  ctx.font='9px monospace';ctx.fillStyle='rgba(255,180,0,0.65)';ctx.textAlign='center';ctx.fillText('COLLAR',stopX,cy-pipeR-25);
+  drawRuler(ctx,hoseEndX-Math.round(2*PX),H-40,12,PX,'#ffd700',1);
+  ctx.font='10px monospace';ctx.fillStyle='rgba(255,215,0,0.65)';ctx.textAlign='left';ctx.fillText('INSERTION: Target 0mm to stopper',14,H-8);
+}
+
+function nl_sim(){LS={step:irnd(-4.5,4.5,0.5)};paintLevel();iclr('l');}
+
+function paintLevel(){
+  const cv=document.getElementById('cLevel');if(!cv)return;
+  const W=cv.width,H=cv.height,ctx=cv.getContext('2d');
+  ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);
+  const s=LS.step,sPx=Math.round(s*PX),MID=H/2,pW=210,pH=255;
+  const bX=110,dX=bX+pW+24,bY=MID-pH/2,dY=bY+sPx;
+  function panelG(x,y,w,h){const g=ctx.createLinearGradient(x,y,x+w,y);g.addColorStop(0,'#aeb5c2');g.addColorStop(0.50,'#e4e8f2');g.addColorStop(1,'#b0b4c0');return g;}
+  ctx.save();ctx.beginPath();ctx.roundRect(bX,bY,pW,pH,[6,0,0,6]);ctx.fillStyle=panelG(bX,bY,pW,pH);ctx.fill();ctx.strokeStyle='rgba(55,62,80,0.45)';ctx.lineWidth=1;ctx.stroke();ctx.restore();
+  ctx.save();ctx.beginPath();ctx.roundRect(dX,dY,pW,pH,[0,6,6,0]);ctx.fillStyle=panelG(dX,dY,pW,pH);ctx.fill();ctx.strokeStyle='rgba(55,62,80,0.45)';ctx.lineWidth=1;ctx.stroke();ctx.restore();
+  ctx.fillStyle='#000';ctx.fillRect(bX+pW,Math.min(bY,dY)-4,24,pH+Math.abs(sPx)+8);
+  ctx.strokeStyle='rgba(255,255,255,0.16)';ctx.lineWidth=1;ctx.setLineDash([7,5]);ctx.beginPath();ctx.moveTo(bX-22,bY);ctx.lineTo(dX+pW+75,bY);ctx.stroke();ctx.setLineDash([]);
+  const sx=dX+pW+50,s2px=Math.round(2*PX);
+  ctx.fillStyle='rgba(0,230,118,0.06)';ctx.fillRect(sx-18,bY-s2px,36,s2px*2);
+  if(Math.abs(sPx)>3){ctx.fillStyle='rgba(255,51,51,0.1)';ctx.fillRect(sx-6,Math.min(bY,dY),12,Math.abs(sPx));ctx.strokeStyle='#ff3333';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(sx,bY);ctx.lineTo(sx,dY);ctx.stroke();ctx.fillStyle='#ff3333';ctx.font='bold 13px sans-serif';ctx.textAlign='left';ctx.fillText('? mm',sx+10,(bY+dY)/2+4);}
+  else{ctx.fillStyle='#00e676';ctx.font='bold 12px sans-serif';ctx.textAlign='left';ctx.fillText('≈ FLUSH',sx+7,bY+5);}
+  ctx.save();ctx.translate(sx+95,bY-5*PX);ctx.strokeStyle='#ffd700';ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,10*PX);ctx.stroke();for(let i=-5;i<=5;i++){const y=(i+5)*PX;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(i%2===0?9:4,y);ctx.stroke();if(i%2===0){ctx.fillStyle='#ffd700';ctx.font='10px monospace';ctx.textAlign='left';ctx.fillText(i,12,y+3);}}ctx.restore();
+  ctx.font='10px monospace';ctx.fillStyle='rgba(255,215,0,0.65)';ctx.textAlign='left';ctx.fillText('LEVELNESS: Max 0 +/- 2.00mm',14,H-8);
+  ctx.font='bold 10px sans-serif';ctx.textAlign='center';ctx.fillStyle='rgba(255,255,255,0.32)';ctx.fillText('BODY',bX+pW/2,bY-7);ctx.fillText('DOOR',dX+pW/2,dY-7);
+}
+
+function drawRuler(ctx,ox,oy,mm,pxPerMm,col,maj){ctx.save();ctx.strokeStyle=col;ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+mm*pxPerMm,oy);ctx.stroke();for(let i=0;i<=mm;i++){const tx=ox+i*pxPerMm,iM=i%maj===0;ctx.beginPath();ctx.moveTo(tx,oy);ctx.lineTo(tx,oy+(iM?9:5));ctx.stroke();if(iM){ctx.fillStyle=col;ctx.font='10px monospace';ctx.textAlign='center';ctx.fillText(i,tx,oy+19);}}ctx.restore();}
+
+function arrowH(ctx,x1,y,x2,label,labelY){ctx.save();ctx.strokeStyle='#ff3333';ctx.lineWidth=1.6;ctx.setLineDash([5,3]);ctx.beginPath();ctx.moveTo(x1,y);ctx.lineTo(x2,y);ctx.stroke();ctx.setLineDash([]);[[x1,-1],[x2,1]].forEach(([ax,d])=>{ctx.beginPath();ctx.moveTo(ax,y);ctx.lineTo(ax+d*8,y-4);ctx.lineTo(ax+d*8,y+4);ctx.closePath();ctx.fillStyle='#ff3333';ctx.fill();});ctx.fillStyle='#ff3333';ctx.font='bold 14px sans-serif';ctx.textAlign='center';ctx.fillText(label,(x1+x2)/2,labelY||y-12);ctx.restore();}
+
+function chk(mod){
+  const ans=parseFloat(document.getElementById(mod[0]+'-ans').value);
+  const fb=document.getElementById(mod[0]+'-fb');
+  if(isNaN(ans)){fb.textContent='Enter your measurement estimate.';fb.className='ipt-fb f';return;}
+  SC[mod][1]++;
+  let actual,okFn,tol;
+  switch(mod){case'door':actual=DS.gap;okFn=v=>v>=3&&v<=7;tol=1.0;break;case'clip':actual=CS.dist;okFn=v=>v>=2&&v<=7;tol=1.0;break;case'insert':actual=IS.gap;okFn=v=>v<=0.5;tol=0.5;break;case'level':actual=LS.step;okFn=v=>Math.abs(v)<=2;tol=0.5;break;}
+  const specOk=okFn(actual),estOk=Math.abs(ans-actual)<=tol;
+  const pass=estOk;
+  if(pass)SC[mod][0]++;
+  fb.textContent=(pass?'PASS ✓':'FAIL ✗')+'  Actual='+actual.toFixed(1)+'mm → Spec: '+(specOk?'OK ✓':'NG ✗')+'.  Your estimate: '+ans+'mm  (tolerance ±'+tol+'mm)';
+  fb.className='ipt-fb '+(pass?'p':'f');
+  const p=mod[0];
+  document.getElementById(p+'-sc').textContent='Correct: '+SC[mod][0];
+  document.getElementById(p+'-tot').textContent='Attempts: '+SC[mod][1];
+  iUpdG();
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+renderAll();
+applyTranslations();
+setTimeout(()=>{
+  initAllCanvases();
+  nd();nc();ni_sim();nl_sim();
+  // Re-init if screen DPI changes (e.g. window move to another monitor)
+  window.matchMedia('screen').addEventListener('change',()=>{initAllCanvases();nd();nc();ni_sim();nl_sim();});
+},200);
+</script>
+</body>
+</html>
