@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LineFlow Unified App</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #070b14;
+    --card: #0d1320;
+    --border: rgba(255,255,255,0.07);
+    --text: #e6f1ff;
+    --muted: #4a6080;
+    --accent: #00d4ff;
+    --purple: #9d4edd;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    overflow: hidden;
+  }
+
+  #shell { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+
+  /* ── NAV ── */
+  #nav {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(7,11,20,0.97);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    height: 48px;
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  /* Logo */
+  .nav-logo {
+    display: flex; align-items: center; gap: 9px;
+    margin-right: 18px; flex-shrink: 0;
+  }
+  .nav-logo-icon {
+    width: 26px; height: 26px;
+    background: linear-gradient(135deg, #00d4ff, #9d4edd);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-logo-icon svg { width: 14px; height: 14px; }
+  .nav-logo-name {
+    font-size: 14px; font-weight: 700; letter-spacing: -0.3px;
+    background: linear-gradient(135deg, #00d4ff, #9d4edd);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+
+  /* Divider */
+  .nav-divider { width: 1px; height: 24px; background: var(--border); margin: 0 14px; flex-shrink: 0; }
+
+  /* Tabs */
+  .nav-tabs { display: flex; align-items: center; gap: 3px; overflow-x: auto; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 11px;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .nav-tab svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .nav-tab:hover { color: #e6f1ff; background: rgba(255,255,255,0.05); }
+
+  /* Active states per colour */
+  .nav-tab.active {
+    color: #e6f1ff;
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.1);
+  }
+  .nav-tab.t-home.active  { color: #00d4ff; border-color: rgba(0,212,255,0.35);   background: rgba(0,212,255,0.15); }
+  .nav-tab.t-blue.active  { color: #00d4ff; border-color: rgba(0,212,255,0.3);    background: rgba(0,212,255,0.08); }
+  .nav-tab.t-yellow.active{ color: #ffcc00; border-color: rgba(255,204,0,0.3);    background: rgba(255,204,0,0.08); }
+  .nav-tab.t-pink.active  { color: #ff4d8d; border-color: rgba(255,77,141,0.3);   background: rgba(255,77,141,0.08); }
+  .nav-tab.t-purple.active{ color: #b967ff; border-color: rgba(185,103,255,0.3);  background: rgba(185,103,255,0.08); }
+  .nav-tab.t-green.active { color: #00ff88; border-color: rgba(0,255,136,0.3);    background: rgba(0,255,136,0.08); }
+
+  /* Active dot */
+  .tab-dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: currentColor; opacity: 0;
+    transition: opacity 0.2s; flex-shrink: 0;
+  }
+  .nav-tab.active .tab-dot { opacity: 1; }
+
+  /* ── CONTENT ── */
+  #content { flex: 1; position: relative; overflow: hidden; }
+
+  /* ── HOME ── */
+  #home-view {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    transition: opacity 0.25s ease;
+  }
+  #home-view.hidden { opacity: 0; pointer-events: none; }
+
+  .home-bg-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+  }
+  .home-orb { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; }
+  .orb1 { width: 500px; height: 500px; background: rgba(0,212,255,0.06);   top: -150px; left: -100px; }
+  .orb2 { width: 400px; height: 400px; background: rgba(157,78,221,0.07);  bottom: -100px; right: -80px; }
+  .orb3 { width: 300px; height: 300px; background: rgba(0,255,136,0.05);   top: 50%; left: 50%; transform: translate(-50%,-50%); }
+
+  .home-content {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 36px; padding: 40px 20px;
+    max-width: 860px; width: 100%;
+  }
+
+  .home-logo { display: flex; align-items: center; gap: 16px; }
+  .home-logo-icon {
+    width: 60px; height: 60px;
+    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(157,78,221,0.15));
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .home-logo-icon svg { width: 30px; height: 30px; }
+  .home-logo-text .name {
+    font-size: 40px; font-weight: 700; letter-spacing: -1.5px; line-height: 1;
+    background: linear-gradient(135deg, #00d4ff, #9d4edd);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .home-logo-text .sub { font-size: 10px; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
+
+  .home-tagline { text-align: center; }
+  .home-tagline p { font-size: 15px; color: #5a7499; }
+  .home-tagline .accent { font-size: 17px; color: #c8d8f0; font-weight: 500; margin-bottom: 4px; }
+
+  /* App cards grid */
+  .app-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; width: 100%; }
+
+  .app-card {
+    position: relative;
+    display: flex; flex-direction: column; align-items: flex-start;
+    gap: 10px; padding: 22px 18px 18px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px; cursor: pointer;
+    transition: all 0.3s ease; overflow: hidden; text-align: left; color: var(--text);
+  }
+  .app-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.055); }
+  .app-card.c-blue:hover   { border-color: rgba(0,212,255,0.35);   box-shadow: 0 8px 32px rgba(0,212,255,0.08); }
+  .app-card.c-yellow:hover { border-color: rgba(255,204,0,0.35);   box-shadow: 0 8px 32px rgba(255,204,0,0.08); }
+  .app-card.c-pink:hover   { border-color: rgba(255,77,141,0.35);  box-shadow: 0 8px 32px rgba(255,77,141,0.08); }
+  .app-card.c-purple:hover { border-color: rgba(185,103,255,0.35); box-shadow: 0 8px 32px rgba(185,103,255,0.08); }
+  .app-card.c-green:hover  { border-color: rgba(0,255,136,0.35);   box-shadow: 0 8px 32px rgba(0,255,136,0.08); }
+
+  .card-icon-wrap { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .c-blue   .card-icon-wrap { background: rgba(0,212,255,0.1); }
+  .c-yellow .card-icon-wrap { background: rgba(255,204,0,0.1); }
+  .c-pink   .card-icon-wrap { background: rgba(255,77,141,0.1); }
+  .c-purple .card-icon-wrap { background: rgba(185,103,255,0.1); }
+  .c-green  .card-icon-wrap { background: rgba(0,255,136,0.1); }
+  .card-icon-wrap svg { width: 18px; height: 18px; }
+  .c-blue   .card-icon-wrap svg { color: #00d4ff; }
+  .c-yellow .card-icon-wrap svg { color: #ffcc00; }
+  .c-pink   .card-icon-wrap svg { color: #ff4d8d; }
+  .c-purple .card-icon-wrap svg { color: #b967ff; }
+  .c-green  .card-icon-wrap svg { color: #00ff88; }
+
+  .card-label { font-size: 12px; font-weight: 700; letter-spacing: 0.5px; }
+  .card-desc  { font-size: 10px; color: var(--muted); line-height: 1.5; flex: 1; }
+  .card-arrow { font-size: 16px; color: var(--muted); align-self: flex-end; transition: all 0.3s; }
+  .c-blue:hover   .card-arrow { color: #00d4ff; transform: translateX(3px); }
+  .c-yellow:hover .card-arrow { color: #ffcc00; transform: translateX(3px); }
+  .c-pink:hover   .card-arrow { color: #ff4d8d; transform: translateX(3px); }
+  .c-purple:hover .card-arrow { color: #b967ff; transform: translateX(3px); }
+  .c-green:hover  .card-arrow { color: #00ff88; transform: translateX(3px); }
+
+  .home-footer { font-size: 10px; color: #1e2d42; letter-spacing: 2px; text-transform: uppercase; }
+
+  /* ── APP VIEWS (iframes) ── */
+  .app-view { position: absolute; inset: 0; display: none; }
+  .app-view.active { display: block; }
+  .app-view iframe { width: 100%; height: 100%; border: none; display: block; }
+
+  /* Loading overlay */
+  .app-view .loader {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: #080c15; gap: 16px; z-index: 10;
+    font-family: 'Courier New', monospace; color: #4a6080; font-size: 12px;
+  }
+  .loader-spinner {
+    width: 36px; height: 36px;
+    border: 2px solid rgba(0,212,255,0.1);
+    border-top-color: #00d4ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 700px) {
+    .app-grid { grid-template-columns: repeat(2,1fr); }
+    .home-logo-text .name { font-size: 28px; }
+    .nav-logo-name { display: none; }
+  }
+</style>
+<script src="/backend-sync.js"></script>
+</head>
+<body>
+<div id="shell">
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
+      <span class="nav-logo-name">LineFlow</span>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-tabs">
+
+      <button class="nav-tab t-home active" onclick="showView('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span class="tab-dot"></span>Home
+      </button>
+
+      <button class="nav-tab t-yellow" onclick="showView('fmds')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+        </svg>
+        <span class="tab-dot"></span>FMDS
+      </button>
+
+     <button class="nav-tab t-blue" onclick="showView('gl')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+        <span class="tab-dot"></span>GL KPI
+      </button>
+
+      <button class="nav-tab t-pink" onclick="showView('tl')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+        <span class="tab-dot"></span>TL KPI
+      </button>
+
+      <button class="nav-tab t-purple" onclick="showView('pa')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+        </svg>
+        <span class="tab-dot"></span>Process Allocation
+      </button>
+
+      <button class="nav-tab t-green" onclick="showView('training')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+        <span class="tab-dot"></span>Training Hub
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <div id="content">
+
+    <!-- HOME VIEW -->
+    <div id="home-view">
+      <div class="home-bg-grid"></div>
+      <div class="home-orb orb1"></div>
+      <div class="home-orb orb2"></div>
+      <div class="home-orb orb3"></div>
+      <div class="home-content">
+
+        <div class="home-logo">
+          <div class="home-logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <div class="home-logo-text">
+            <div class="name">LineFlow</div>
+            <div class="sub">Operations Intelligence Suite</div>
+          </div>
+        </div>
+
+        <div class="home-tagline">
+          <p class="accent">Unified visibility. Real-time intelligence.</p>
+          <p>All your line operations dashboards in one place.</p>
+        </div>
+
+        <div class="app-grid">
+
+          <div class="app-card c-yellow" onclick="showView('fmds')">
+            <div class="card-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+              </svg>
+            </div>
+            <div class="card-label">FMDS Dashboard</div>
+            <div class="card-desc">Trim inspection FMDS weekly data with annual leave tracking and shift summaries.</div>
+            <span class="card-arrow">→</span>
+          </div>
+
+          <div class="app-card c-blue" onclick="showView('gl')">
+            <div class="card-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+            </div>
+            <div class="card-label">GL KPI Dashboard</div>
+            <div class="card-desc">Group Leader performance metrics, quality indicators and trim line operations overview.</div>
+            <span class="card-arrow">→</span>
+          </div>
+
+          <div class="app-card c-pink" onclick="showView('tl')">
+            <div class="card-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+            </div>
+            <div class="card-label">TL KPI Dashboard</div>
+            <div class="card-desc">Team Leader KPIs for TKM QCD-QI P2 — white shift performance and quality data.</div>
+            <span class="card-arrow">→</span>
+          </div>
+
+          <div class="app-card c-purple" onclick="showView('pa')">
+            <div class="card-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+              </svg>
+            </div>
+            <div class="card-label">Process Allocation</div>
+            <div class="card-desc">Full process allocation matrix with operator assignments and work station mapping.</div>
+            <span class="card-arrow">→</span>
+          </div>
+
+          <div class="app-card c-green" onclick="showView('training')">
+            <div class="card-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+            </div>
+            <div class="card-label">Training Hub</div>
+            <div class="card-desc">Team training records, skill matrices and learning pathway management portal.</div>
+            <span class="card-arrow">→</span>
+          </div>
+
+        </div>
+
+        <div class="home-footer">LineFlow v1.0 &nbsp;·&nbsp; Operations Intelligence Suite</div>
+      </div>
+    </div>
+
+    <!-- MODULE VIEWS -->
+
+    <div id="view-fmds" class="app-view">
+      <div class="loader" id="loader-fmds">
+        <div class="loader-spinner"></div>
+        <span>Loading FMDS Dashboard…</span>
+      </div>
+      <iframe src="" onload="hideLoader('fmds')"></iframe>
+    </div>
+
+   <div id="view-gl" class="app-view">
+      <div class="loader" id="loader-gl">
+        <div class="loader-spinner"></div>
+        <span>Loading GL KPI Dashboard…</span>
+      </div>
+      <iframe src="" onload="hideLoader('gl')"></iframe>
+    </div>
+
+    <div id="view-tl" class="app-view">
+      <div class="loader" id="loader-tl">
+        <div class="loader-spinner"></div>
+        <span>Loading TL KPI Dashboard…</span>
+      </div>
+      <iframe src="" onload="hideLoader('tl')"></iframe>
+    </div>
+
+    <div id="view-pa" class="app-view">
+      <div class="loader" id="loader-pa">
+        <div class="loader-spinner"></div>
+        <span>Loading Process Allocation…</span>
+      </div>
+      <iframe src="" onload="hideLoader('pa')"></iframe>
+    </div>
+
+    <div id="view-training" class="app-view">
+      <div class="loader" id="loader-training">
+        <div class="loader-spinner"></div>
+        <span>Loading Training Hub…</span>
+      </div>
+      <iframe src="" onload="hideLoader('training')"></iframe>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /shell -->
+
+<script>
+  const FILE_MAP = {
+    fmds:     "/fmds.html",
+    gl:       "/gl-kpi.html",
+    tl:       "/tl-kpi.html",
+    pa:       "/process-allocation.html",
+    training: "/training-hub.html"
+  };
+
+  const TAB_COLOR = {
+    home: 't-home', fmds: 't-yellow', gl: 't-blue',
+    tl: 't-pink', pa: 't-purple', training: 't-green'
+  };
+
+  let currentView = 'home';
+
+  function showView(id) {
+    // Deactivate all tabs
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+    // Activate matching tab
+    const tabs = document.querySelectorAll('.nav-tab');
+    tabs.forEach(t => {
+      if (t.getAttribute('onclick') === `showView('${id}')`) t.classList.add('active');
+    });
+
+    // Hide home
+    const homeView = document.getElementById('home-view');
+    if (id === 'home') {
+      homeView.classList.remove('hidden');
+      document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+      currentView = 'home';
+      return;
+    }
+    homeView.classList.add('hidden');
+
+    // Hide all module views
+    document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+
+    // Show target view
+    const view = document.getElementById('view-' + id);
+    view.classList.add('active');
+
+    // Load iframe if not already loaded
+    const iframe = view.querySelector('iframe');
+    if (!iframe.src || iframe.src === window.location.href) {
+      const loader = document.getElementById('loader-' + id);
+      if (loader) loader.style.display = 'flex';
+      iframe.src = FILE_MAP[id];
+    }
+
+    currentView = id;
+  }
+
+  function hideLoader(id) {
+    const loader = document.getElementById('loader-' + id);
+    if (loader) loader.style.display = 'none';
+  }
+</script>
+</body>
+</html>
