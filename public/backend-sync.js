@@ -27,7 +27,7 @@
       if (!json.ok) return;
       Object.entries(json.data || {}).forEach(([k, v]) => {
         if (v === null || v === undefined) return;
-        originalSet(k, v);
+        originalSet(k, typeof v === 'string' ? v : JSON.stringify(v));
       });
       ready = true;
       showStatus('Backend sync: connected', true);
