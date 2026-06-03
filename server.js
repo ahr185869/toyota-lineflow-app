@@ -115,7 +115,7 @@ app.post('/api/backup', async(req,res)=>res.json({ok:true,message:'Supabase is t
 app.get('/api/backups', async(req,res)=>res.json({ok:true,backups:[],message:'Supabase mode'}));
 
 app.use(express.static(PUBLIC_DIR));
-app.get('/', (req,res)=>res.sendFile(path.join(PUBLIC_DIR,'login.html')));
+app.get('/', (req,res)=>res.sendFile(path.join(PUBLIC_DIR,'login')));
 app.use((err,req,res,next)=>{console.error(err);res.status(500).json({ok:false,error:err.message||'Server error'});});
 
 ensureAdmin().catch(e=>console.warn('Startup Supabase check:', e.message)).finally(()=>{
