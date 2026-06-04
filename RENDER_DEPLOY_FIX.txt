@@ -1,0 +1,25 @@
+RENDER DEPLOY FIX
+
+Use NORMAL Render Node Web Service, not Docker, unless you specifically selected Docker.
+
+Recommended Render settings:
+Environment: Node
+Build Command: npm install
+Start Command: npm start
+Health Check Path: /api/health
+
+Environment Variables:
+SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
+NODE_ENV=production
+
+If Render is asking for Dockerfile:
+- This package now includes Dockerfile.
+- Or change Render Environment from Docker to Node.
+
+After deploy, open:
+/api/health
+
+It must show:
+database: supabase-free-tier
+supabase: connected

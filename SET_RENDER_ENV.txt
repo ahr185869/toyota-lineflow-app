@@ -1,0 +1,7 @@
+Add these in Render > Your Service > Environment:
+
+SUPABASE_URL=https://ryqzrkfeozcjfotryywi.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=PASTE_YOUR_SERVICE_ROLE_KEY_HERE
+NODE_ENV=production
+
+Do NOT put the service role key inside HTML.
