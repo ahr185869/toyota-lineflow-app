@@ -1,0 +1,14 @@
+Fixed Supabase persistence issue:
+
+1. supabase-sync.js now pulls database data before page scripts run, so page defaults will not overwrite Supabase after restart.
+2. It tracks local/remote timestamps and prevents older Supabase/default data from overwriting newer unsynced browser changes.
+3. It flushes saves immediately, every 3 seconds, and on page close/pagehide using sendBeacon.
+4. server.js /api/storage now returns updatedAt timestamps required for conflict protection.
+5. process-allocation.html save() now calls backendSyncNow() immediately after every save.
+
+Deploy steps:
+- Replace your project files with this package.
+- Keep Render env: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, NODE_ENV=production.
+- Render: Manual Deploy -> Clear Build Cache & Deploy.
+- On the PC that has latest correct data, open any page and run this once in Console: forceSupabaseSyncAll()
+- Then refresh the second PC.
